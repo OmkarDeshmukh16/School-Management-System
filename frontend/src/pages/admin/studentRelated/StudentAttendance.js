@@ -33,16 +33,23 @@ const StudentAttendance = ({ situation }) => {
 
     useEffect(() => {
         if (situation === "Student") {
-            setStudentID(params.id);
-            dispatch(getUserDetails(params.id, "Student"));
+            const id = params.id;
+            setStudentID(id);
+            // Guard: Only fetch if we aren't already loading and don't have the data for this ID
+            if (!loading && userDetails?._id !== id) {
+                dispatch(getUserDetails(id, "Student"));
+            }
         }
         else if (situation === "Subject") {
-            const { studentID, subjectID } = params
+            const { studentID, subjectID } = params;
             setStudentID(studentID);
-            dispatch(getUserDetails(studentID, "Student"));
             setChosenSubName(subjectID);
+            // Guard: Only fetch if we aren't already loading and don't have the data for this ID
+            if (!loading && userDetails?._id !== studentID) {
+                dispatch(getUserDetails(studentID, "Student"));
+            }
         }
-    }, [situation, params, dispatch]);
+    }, [situation, params.id, params.studentID, params.subjectID, dispatch, loading, userDetails?._id]);
 
     useEffect(() => {
         if (userDetails && userDetails.sclassName && situation === "Student") {
@@ -98,7 +105,7 @@ const StudentAttendance = ({ situation }) => {
                     <Box sx={{ mb: 4, pb: 2, borderBottom: '1px solid #eee' }}>
                         <LabelText>Scholar Name</LabelText>
                         <ValueText>{userDetails.name}</ValueText>
-                        
+
                         {currentUser.teachSubject && (
                             <Box sx={{ mt: 2 }}>
                                 <LabelText>Subject Designation</LabelText>
@@ -115,10 +122,10 @@ const StudentAttendance = ({ situation }) => {
                                     <ClassicSelect
                                         value={subjectName}
                                         label="Subject Selection"
-                                        onChange={changeHandler} 
+                                        onChange={changeHandler}
                                         required
                                     >
-                                        {subjectsList ? 
+                                        {subjectsList ?
                                             subjectsList.map((subject, index) => (
                                                 <MenuItem key={index} value={subject.subName} sx={{ fontFamily: 'serif' }}>
                                                     {subject.subName}
@@ -148,7 +155,7 @@ const StudentAttendance = ({ situation }) => {
                                 label="Entry Date"
                                 type="date"
                                 value={date}
-                                onChange={(event) => setDate(event.target.value)} 
+                                onChange={(event) => setDate(event.target.value)}
                                 required
                                 fullWidth
                                 InputLabelProps={{ shrink: true }}

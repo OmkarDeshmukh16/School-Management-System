@@ -31,17 +31,24 @@ const StudentExamMarks = ({ situation }) => {
     const [loader, setLoader] = useState(false);
 
     useEffect(() => {
-        if (situation === "Student") {
-            setStudentID(params.id);
-            dispatch(getUserDetails(params.id, "Student"));
+    if (situation === "Student") {
+        const id = params.id;
+        setStudentID(id);
+        // Guard: Only fetch if we aren't already loading and don't have the data for this ID
+        if (!loading && userDetails?._id !== id) {
+            dispatch(getUserDetails(id, "Student"));
         }
-        else if (situation === "Subject") {
-            const { studentID, subjectID } = params;
-            setStudentID(studentID);
+    }
+    else if (situation === "Subject") {
+        const { studentID, subjectID } = params;
+        setStudentID(studentID);
+        setChosenSubName(subjectID);
+        // Guard: Only fetch if we aren't already loading and don't have the data for this ID
+        if (!loading && userDetails?._id !== studentID) {
             dispatch(getUserDetails(studentID, "Student"));
-            setChosenSubName(subjectID);
         }
-    }, [situation, params, dispatch]);
+    }
+}, [situation, params.id, params.studentID, params.subjectID, dispatch, loading, userDetails?._id]);
 
     useEffect(() => {
         if (userDetails && userDetails.sclassName && situation === "Student") {

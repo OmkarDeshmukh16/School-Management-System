@@ -13,6 +13,7 @@ import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccountOutlined';
 import ReportIcon from '@mui/icons-material/Report';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 const SideBar = () => {
     const location = useLocation();
@@ -58,6 +59,17 @@ const SideBar = () => {
                     <ClassicListItemText primary="Students" />
                 </ClassicNavButton>
 
+                <ClassicNavButton
+                    component={Link}
+                    to="/Admin/bulk-enroll"
+                    $active={isActive("/Admin/bulk-enroll")}
+                >
+                    <ClassicListItemIcon>
+                        <FileUploadIcon fontSize="small" color="inherit" />
+                    </ClassicListItemIcon>
+                    <ListItemText primary="Bulk Enrollment" />
+                </ClassicNavButton>
+
                 <ClassicNavButton component={Link} to="/Admin/notices" className={isActive("/Admin/notices") ? "active" : ""}>
                     <ClassicListItemIcon>
                         <AnnouncementOutlinedIcon fontSize="small" />
@@ -77,7 +89,7 @@ const SideBar = () => {
 
             <React.Fragment>
                 <ClassicListSubheader>User Management</ClassicListSubheader>
-                
+
                 <ClassicNavButton component={Link} to="/Admin/profile" className={isActive("/Admin/profile") ? "active" : ""}>
                     <ClassicListItemIcon>
                         <AccountCircleOutlinedIcon fontSize="small" />

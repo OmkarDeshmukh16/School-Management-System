@@ -1,6 +1,55 @@
 const bcrypt = require('bcrypt');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
+const XLSX = require('xlsx');
+const fs = require('fs');
+
+const bulkStudentRegistration = async (req, res) => {
+    try {
+        const { school, sclassName } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ message: "No Excel file provided" });
+        }
+
+        // Read the file from the path Multer saved it to
+        const workbook = XLSX.readFile(req.file.path);
+        const sheetName = workbook.SheetNames[0]; 
+        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        // Map Excel rows to your Mongoose Schema
+        const students = sheetData.map((row) => ({
+            name: row.Name || row.name,
+            rollNum: row.RollNum || row.rollNum,
+            password: row.Password || row.password || "123456",
+            sclassName: sclassName,
+            school: school,
+            role: 'Student',
+            attendance: [],
+            examResult: []
+        }));
+
+        if (students.length === 0) {
+            return res.status(400).json({ message: "The Excel sheet appears to be empty." });
+        }
+
+        // Bulk insert into MongoDB
+        const result = await Student.insertMany(students);
+
+        // Clean up: delete the temporary file
+        fs.unlinkSync(req.file.path);
+
+        res.status(200).json({ 
+            message: `${result.length} Scholars successfully enrolled from the Excel ledger.`,
+            success: true 
+        });
+
+    } catch (error) {
+        // Ensure file is deleted even if error occurs
+        if (req.file) fs.unlinkSync(req.file.path);
+        res.status(500).json({ message: "Error processing Excel registry", error: error.message });
+    }
+};
 
 const studentRegister = async (req, res) => {
     try {
@@ -283,7 +332,7 @@ module.exports = {
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
-
+    bulkStudentRegistration,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,

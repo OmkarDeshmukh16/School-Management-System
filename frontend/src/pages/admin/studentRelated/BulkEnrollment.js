@@ -1,36 +1,44 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, CircularProgress, Container, Stack } from '@mui/material';
+import { Box, Typography, Paper, CircularProgress, Container, Stack, Select, MenuItem, FormControl } from '@mui/material';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import styled from 'styled-components';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { downloadScholarTemplate } from '../../../utils/excelTemplate';
 
 const BulkEnrollment = () => {
     const [file, setFile] = useState(null);
     const [loader, setLoader] = useState(false);
     const [message, setMessage] = useState("");
-    
+    // Ensure 'sclass' matches the name of the reducer in your store.js
+    const { sclassesList, loading: classLoading } = useSelector((state) => state.sclass);
     // Get institutional data from Redux
     const { currentUser } = useSelector(state => state.user);
+    // const { sclassesList } = useSelector(state => state.sclass);
     const schoolID = currentUser._id;
 
     const handleFileChange = (e) => setFile(e.target.files[0]);
 
+    const [selectedSclass, setSelectedSclass] = useState("");
+
     const handleUpload = async (e) => {
         e.preventDefault();
-        if (!file) return;
+        if (!file || !selectedSclass) {
+            alert("Please select both a class and an Excel file.");
+            return;
+        }
 
         const formData = new FormData();
         formData.append('excelFile', file);
         formData.append('school', schoolID);
-        // Note: You can also pass a specific classID here if needed
+        formData.append('sclassName', selectedSclass); // This was missing!
 
         setLoader(true);
         try {
             const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/BulkStudentReg`, formData);
             setMessage(res.data.message);
         } catch (err) {
-            setMessage("Failed to sync registry. Ensure headers are: Name, RollNum, Password.");
+            setMessage("Registry update failed. Check console for details.");
         }
         setLoader(false);
     };
@@ -39,40 +47,67 @@ const BulkEnrollment = () => {
         <Container maxWidth="md" sx={{ mt: 4 }}>
             <DossierPaper elevation={0}>
                 <HeaderSection>
-                    <ClassicTitle variant="h4">Institutional Registry Upload</ClassicTitle>
-                    <ClassicSubtitle>Authorize mass scholar enrollment via Excel ledger</ClassicSubtitle>
+                    <ClassicTitle variant="h4">Mass Enrollment Portal</ClassicTitle>
+                    <ClassicSubtitle>Follow the institutional format for scholar registration</ClassicSubtitle>
                 </HeaderSection>
 
                 <Stack spacing={4} alignItems="center">
-                    <UploadZone>
-                        <CloudUploadIcon sx={{ fontSize: 48, color: '#7d6b5d', mb: 2 }} />
-                        <Typography sx={{ fontFamily: 'serif', mb: 2 }}>
-                            Select the formatted .xlsx or .xls enrollment ledger
+                    {/* NEW: Template Download Section */}
+                    <Box sx={{ textAlign: 'center', width: '100%', p: 3, border: '1px solid #e0dcd0', bgcolor: '#fdfcf8' }}>
+                        <Typography sx={{ fontFamily: 'serif', mb: 2, fontStyle: 'italic' }}>
+                            Step 1: Obtain the official enrollment template to ensure data integrity.
                         </Typography>
-                        
-                        <input 
-                            type="file" 
-                            accept=".xlsx, .xls" 
-                            onChange={handleFileChange} 
-                            id="excel-upload" 
-                            style={{ display: 'none' }} 
-                        />
+                        <ClassicOutlineButton onClick={downloadScholarTemplate}>
+                            Download Sample Ledger (.xlsx)
+                        </ClassicOutlineButton>
+                    </Box>
+                    <Box sx={{ mb: 3, width: '100%' }}>
+                        <LabelText>Target Academic Cohort</LabelText>
+                        <FormControl fullWidth>
+                            <ClassicSelect
+                                value={selectedSclass}
+                                onChange={(e) => setSelectedSclass(e.target.value)}
+                                displayEmpty
+                                disabled={classLoading} // Show disabled state while loading
+                            >
+                                <MenuItem value="" disabled>
+                                    {classLoading ? "Loading Registry..." : "Select Class for this Batch"}
+                                </MenuItem>
+
+                                {/* Safe mapping with optional chaining */}
+                                {sclassesList && sclassesList.length > 0 ? (
+                                    sclassesList.map((item) => (
+                                        <MenuItem key={item._id} value={item._id}>
+                                            {item.sclassName}
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <MenuItem disabled>No Classes Found in Registry</MenuItem>
+                                )}
+                            </ClassicSelect>
+                        </FormControl>
+                    </Box>
+                    {/* Upload Section */}
+                    <UploadZone>
+                        <Typography sx={{ fontFamily: 'serif', mb: 2 }}>
+                            Step 2: Select the completed enrollment ledger for verification.
+                        </Typography>
+                        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} id="excel-upload" style={{ display: 'none' }} />
                         <label htmlFor="excel-upload">
-                            <ClassicOutlineButton as="span">Browse Files</ClassicOutlineButton>
+                            <Primary3DButton as="span" style={{ fontSize: '0.8rem', padding: '8px 20px' }}>
+                                Browse Local Files
+                            </Primary3DButton>
                         </label>
-                        
-                        {file && (
-                            <Typography sx={{ mt: 2, fontStyle: 'italic', fontWeight: 'bold' }}>
-                                File Selected: {file.name}
-                            </Typography>
-                        )}
+                        {file && <Typography sx={{ mt: 2, fontWeight: 'bold' }}>{file.name}</Typography>}
                     </UploadZone>
 
-                    <Primary3DButton onClick={handleUpload} disabled={loader || !file}>
+                    <Primary3DButton
+                        onClick={handleUpload}
+                        disabled={loader || !file}
+                        sx={{ width: '100%' }}
+                    >
                         {loader ? <CircularProgress size={24} color="inherit" /> : "Authorize Mass Enrollment"}
                     </Primary3DButton>
-                    
-                    {message && <StatusNote>{message}</StatusNote>}
                 </Stack>
             </DossierPaper>
         </Container>
@@ -138,4 +173,17 @@ const ClassicOutlineButton = styled.button`
 
 const StatusNote = styled.p`
     font-family: serif; font-style: italic; color: #1a1a1a; margin-top: 20px;
+`;
+
+const ClassicSelect = styled(Select)`
+    && {
+        font-family: serif;
+        & .MuiOutlinedInput-root {
+            border-color: #e0dcd0;
+        }
+    }
+`;
+
+const LabelText = styled(Typography)`
+    && { font-family: serif; font-weight: 500; margin-bottom: 8px; color: #1a1a1a; }
 `;

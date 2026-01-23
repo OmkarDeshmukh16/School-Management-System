@@ -27,6 +27,39 @@ const studentSchema = new mongoose.Schema({
         type: String,
         default: "Student"
     },
+    email: {
+        type: String,
+    },
+    gender: {
+        type: String,
+    },
+    dob: {
+        type: Date, // Date of birth
+    },
+    nationality: {
+        type: String,
+    },
+    motherTongue: {
+        type: String,
+    },
+    religion: {
+        type: String,
+    },
+    caste: {
+        type: String,
+    },
+    subCaste: {
+        type: String,
+    },
+    birthPlace: {
+        type: String,
+    },
+    phone: {
+        type: String, // Mob no.
+    },
+    address: {
+        type: String,
+    },
     examResult: [
         {
             subName: {

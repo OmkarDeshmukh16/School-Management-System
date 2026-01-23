@@ -121,6 +121,6 @@ router.delete("/Subjects/:id", deleteSubjects)
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 
 // Bulk Student Registration
-router.post('/BulkStudentReg', upload.single('csvFile'), bulkStudentRegistration);
+router.post('/BulkStudentReg', upload.single('excelFile'), bulkStudentRegistration);
 
 module.exports = router;

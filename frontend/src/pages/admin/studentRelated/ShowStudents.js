@@ -2,14 +2,20 @@ import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { getAllStudents } from '../../../redux/studentRelated/studentHandle';
-import { Box, IconButton, Paper, Typography, CircularProgress, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList } from '@mui/material';
+import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
+import {
+    Box, IconButton, Paper, Typography, CircularProgress,
+    Button, ButtonGroup, ClickAwayListener, Grow, Popper,
+    MenuItem, MenuList, Select, FormControl
+} from '@mui/material';
 import styled from 'styled-components';
-
+import * as XLSX from 'xlsx';
 // Icons
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 // Components
 import TableTemplate from '../../../components/TableTemplate';
@@ -19,19 +25,58 @@ import Popup from '../../../components/Popup';
 const ShowStudents = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
     const { studentsList, loading, error, response } = useSelector((state) => state.student);
+    const { sclassesList } = useSelector((state) => state.sclass);
     const { currentUser } = useSelector(state => state.user);
+
+    const [selectedClass, setSelectedClass] = useState("all");
+    const [showPopup, setShowPopup] = useState(false);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         dispatch(getAllStudents(currentUser._id));
+        dispatch(getAllSclasses(currentUser._id, "Sclass"));
     }, [currentUser._id, dispatch]);
 
-    const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState("");
+    // --- FILTER LOGIC ---
+    const filteredStudents = selectedClass === "all"
+        ? studentsList
+        : studentsList?.filter(student => student.sclassName?._id === selectedClass);
 
     const deleteHandler = () => {
         setMessage("Administrative restriction: Manual deletion of scholar records is currently disabled.");
         setShowPopup(true);
+    };
+
+    const exportToExcel = () => {
+        // 1. Prepare data from the currently filtered list
+        const reportData = filteredStudents.map((student) => ({
+            "Scholar Name": student.name,
+            "Roll Number": student.rollNum,
+            "Academic Class": student.sclassName?.sclassName || "Unassigned",
+            "Email": student.email || "N/A",
+            "Gender": student.gender || "N/A",
+            "Mobile": student.phone || "N/A",
+            "Religion": student.religion || "N/A",
+            "Caste": student.caste || "N/A"
+        }));
+
+        // 2. Create worksheet and workbook
+        const worksheet = XLSX.utils.json_to_sheet(reportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered_Scholar_List");
+
+        // 3. Set column widths for a "Classic" professional look
+        const wscols = Object.keys(reportData[0] || {}).map(() => ({ wch: 20 }));
+        worksheet['!cols'] = wscols;
+
+        // 4. Generate filename based on selection
+        const className = selectedClass === "all" ? "All_Classes" : filteredStudents[0]?.sclassName?.sclassName;
+        const fileName = `Scholar_Registry_${className}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        // 5. Trigger download
+        XLSX.writeFile(workbook, fileName);
     };
 
     const studentColumns = [
@@ -40,10 +85,10 @@ const ShowStudents = () => {
         { id: 'sclassName', label: 'Designated Class', minWidth: 170 },
     ];
 
-    const studentRows = studentsList?.map((student) => ({
+    const studentRows = filteredStudents?.map((student) => ({
         name: student.name,
         rollNum: student.rollNum,
-        sclassName: student.sclassName.sclassName,
+        sclassName: student.sclassName?.sclassName || "Unassigned",
         id: student._id,
     }));
 
@@ -63,7 +108,7 @@ const ShowStudents = () => {
                 <IconButton onClick={deleteHandler}>
                     <PersonRemoveIcon color="error" fontSize="small" />
                 </IconButton>
-                
+
                 <ClassicSmallButton onClick={() => navigate("/Admin/students/student/" + row.id)}>
                     <VisibilityIcon fontSize="inherit" sx={{ mr: 1 }} /> View File
                 </ClassicSmallButton>
@@ -129,13 +174,56 @@ const ShowStudents = () => {
                 )}
             </RegistryHeader>
 
+            {/* CLASSIC FILTER BAR */}
+            <FilterPaper elevation={0}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <FilterListIcon sx={{ color: '#7d6b5d' }} />
+                    <Box>
+                        <LabelText>Filter by Academic Cohort</LabelText>
+                        <ClassicSelect
+                            value={selectedClass}
+                            onChange={(e) => setSelectedClass(e.target.value)}
+                            size="small"
+                        >
+                            <MenuItem value="all"><em>All Registered Scholars</em></MenuItem>
+                            {sclassesList?.map((sclass) => (
+                                <MenuItem key={sclass._id} value={sclass._id}>
+                                    {sclass.sclassName}
+                                </MenuItem>
+                            ))}
+                        </ClassicSelect>
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {/* NEW EXPORT BUTTON */}
+                    <Box sx={{ textAlign: 'center' }}>
+                        <LabelText>Data Export</LabelText>
+                        <ClassicSmallButton
+                            onClick={exportToExcel}
+                            disabled={filteredStudents?.length === 0}
+                            style={{ borderStyle: 'dashed' }}
+                        >
+                            Download Excel Ledger
+                        </ClassicSmallButton>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                        <LabelText>Registry Count</LabelText>
+                        <Typography sx={{ fontFamily: 'Georgia', fontWeight: 'bold', fontSize: '1.2rem' }}>
+                            {filteredStudents?.length || 0}
+                        </Typography>
+                    </Box>
+                </Box>
+            </FilterPaper>
+
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress color="inherit" /></Box>
             ) : (
                 <TableWrapper>
-                    {response ? (
+                    {response || filteredStudents?.length === 0 ? (
                         <EmptyState>
-                            <Typography variant="h6" sx={{ fontFamily: 'serif' }}>No scholars found in the current directory.</Typography>
+                            <Typography variant="h6" sx={{ fontFamily: 'serif' }}>
+                                No scholars found in the selected category.
+                            </Typography>
                         </EmptyState>
                     ) : (
                         <TableTemplate buttonHaver={StudentButtonHaver} columns={studentColumns} rows={studentRows} />
@@ -154,15 +242,30 @@ export default ShowStudents;
 
 const RegistryContainer = styled(Box)`
     padding: 20px;
+    background-color: #f9f7f2;
+    min-height: 100vh;
 `;
 
 const RegistryHeader = styled(Box)`
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     border-bottom: 2px solid #1a1a1a;
     padding-bottom: 20px;
+`;
+
+const FilterPaper = styled(Paper)`
+    && {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        margin-bottom: 30px;
+        background-color: #ffffff;
+        border: 1px solid #e0dcd0;
+        border-radius: 0;
+    }
 `;
 
 const TypographyClassic = styled(Typography)`
@@ -178,12 +281,36 @@ const TypographySubtitle = styled.p`
     font-family: serif; font-style: italic; color: #7d6b5d; margin: 5px 0 0 0;
 `;
 
+const LabelText = styled.p`
+    font-family: serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #7d6b5d;
+    margin: 0 0 4px 0;
+    letter-spacing: 1px;
+    font-weight: bold;
+`;
+
+const ClassicSelect = styled(Select)`
+    &.MuiOutlinedInput-root {
+        border-radius: 0;
+        min-width: 250px;
+        font-family: 'Georgia', serif;
+        background-color: #ffffff;
+        & fieldset { border-color: #e0dcd0; }
+        &.Mui-focused fieldset { border-color: #1a1a1a; }
+    }
+`;
+
 const TableWrapper = styled(Paper)`
     && {
-        border-radius: 0; border: 1px solid #e0dcd0; box-shadow: none;
+        border-radius: 0; border: 1px solid #e0dcd0; box-shadow: 8px 8px 0px #e0dcd0;
         & .MuiTableCell-head {
-            background-color: #1a1a1a; color: white;
-            font-family: 'Georgia', serif; text-transform: uppercase; letter-spacing: 1px;
+            background-color: #1a1a1a !important; color: white !important;
+            font-family: 'Georgia', serif !important; text-transform: uppercase; letter-spacing: 1px;
+        }
+        & .MuiTableCell-body {
+            font-family: 'serif';
         }
     }
 `;
@@ -203,7 +330,7 @@ const StyledButtonGroup = styled(ButtonGroup)`
     & .MuiButton-root {
         border-radius: 0; font-family: serif; font-size: 0.7rem;
         text-transform: uppercase; color: #1a1a1a; border-color: #1a1a1a;
-        &:hover { border-color: #1a1a1a; background-color: #f9f7f2; }
+        &:hover { border-color: #1a1a1a; background-color: #f4f1ea; }
     }
 `;
 

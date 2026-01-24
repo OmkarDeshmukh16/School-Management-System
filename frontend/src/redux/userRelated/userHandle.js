@@ -47,7 +47,7 @@ export const registerUser = (fields, role) => async (dispatch) => {
 
         // Add 'role' or 'name' check to confirm student registration success
         if (result.data.schoolName || result.data.role === "Student" || result.data.name) {
-            dispatch(authSuccess(result.data));
+            dispatch(doneSuccess(result.data));
         }
         else if (result.data.school) {
             dispatch(stuffAdded());

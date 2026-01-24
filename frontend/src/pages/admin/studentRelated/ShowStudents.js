@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
-import { getAllStudents } from '../../../redux/studentRelated/studentHandle';
+import { getAllStudents, deleteUser } from '../../../redux/studentRelated/studentHandle';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import {
     Box, IconButton, Paper, Typography, CircularProgress,
     Button, ButtonGroup, ClickAwayListener, Grow, Popper,
-    MenuItem, MenuList, Select, FormControl
+    MenuItem, MenuList, Select
 } from '@mui/material';
 import styled from 'styled-components';
 import * as XLSX from 'xlsx';
@@ -26,7 +26,7 @@ const ShowStudents = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { studentsList, loading, error, response } = useSelector((state) => state.student);
+    const { studentsList, loading, response } = useSelector((state) => state.student);
     const { sclassesList } = useSelector((state) => state.sclass);
     const { currentUser } = useSelector(state => state.user);
 
@@ -44,10 +44,26 @@ const ShowStudents = () => {
         ? studentsList
         : studentsList?.filter(student => student.sclassName?._id === selectedClass);
 
-    const deleteHandler = () => {
-        setMessage("Administrative restriction: Manual deletion of scholar records is currently disabled.");
+    const [studentToDelete, setStudentToDelete] = useState(null);
+    const deleteHandler = (id) => {
+        setStudentToDelete(id);
+        setMessage("Are you sure you want to permanently purge this scholar's record?");
         setShowPopup(true);
     };
+
+    const confirmDeletion = () => {
+        dispatch(deleteUser(studentToDelete, "Student"));
+        setShowPopup(false);
+    };
+
+    // Update useEffect to catch deletion success
+    useEffect(() => {
+        if (response === 'deleted') {
+            setMessage("Registry updated: Record removed.");
+            setShowPopup(true);
+            dispatch(getAllStudents(currentUser._id)); // Refresh the list
+        }
+    }, [response, dispatch, currentUser._id]);
 
     const exportToExcel = () => {
         // 1. Prepare data from the currently filtered list
@@ -58,8 +74,16 @@ const ShowStudents = () => {
             "Email": student.email || "N/A",
             "Gender": student.gender || "N/A",
             "Mobile": student.phone || "N/A",
+            "Password": "REDACTED",
+            "Date of birth": student.dob ? new Date(student.dob).toLocaleDateString() : "N/A",
+            "Nationality": student.nationality || "N/A",
+            "Mother Tongue": student.motherTongue || "N/A",
             "Religion": student.religion || "N/A",
-            "Caste": student.caste || "N/A"
+            "Caste": student.caste || "N/A",
+            "Sub caste": student.subCaste || "N/A",
+            "Birth Place": student.birthPlace || "N/A",
+            "Mob no.": student.phone || "N/A",
+            "Address": student.address || "N/A"
         }));
 
         // 2. Create worksheet and workbook
@@ -105,7 +129,7 @@ const ShowStudents = () => {
 
         return (
             <ActionContainer>
-                <IconButton onClick={deleteHandler}>
+                <IconButton onClick={() => deleteHandler(row.id)}>
                     <PersonRemoveIcon color="error" fontSize="small" />
                 </IconButton>
 
@@ -231,7 +255,13 @@ const ShowStudents = () => {
                     <SpeedDialTemplate actions={actions} />
                 </TableWrapper>
             )}
-            <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
+            <Popup
+                message={message}
+                showPopup={showPopup}
+                setShowPopup={setShowPopup}
+                showConfirm={message.includes("permanently purge")}
+                onConfirm={confirmDeletion}
+            />
         </RegistryContainer>
     );
 };

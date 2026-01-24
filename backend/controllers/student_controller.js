@@ -20,7 +20,6 @@ const bulkStudentRegistration = async (req, res) => {
 
         // Mapping with exact matches to your Excel Template headers
 
-
         const saltRounds = 10;
 
         const students = await Promise.all(sheetData.map(async (row) => {
@@ -64,32 +63,63 @@ const bulkStudentRegistration = async (req, res) => {
 
 const studentRegister = async (req, res) => {
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPass = await bcrypt.hash(req.body.password, salt);
+        const { 
+            name, rollNum, password, sclassName, school, adminID,
+            email, gender, dob, nationality, motherTongue, 
+            religion, caste, subCaste, birthPlace, phone, address 
+        } = req.body;
 
+        // Ensure we capture the school ID regardless of which key the frontend uses
+        const finalSchoolID = school || adminID;
+
+        // 1. Check for existing student in the same class and school
         const existingStudent = await Student.findOne({
-            rollNum: req.body.rollNum,
-            school: req.body.adminID,
-            sclassName: req.body.sclassName,
+            rollNum: rollNum,
+            school: finalSchoolID,
+            sclassName: sclassName,
         });
 
         if (existingStudent) {
-            res.send({ message: 'Roll Number already exists' });
+            return res.send({ message: 'Roll Number already exists in this cohort' });
         }
-        else {
-            const student = new Student({
-                ...req.body,
-                school: req.body.adminID,
-                password: hashedPass
-            });
 
-            let result = await student.save();
+        // 2. Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPass = await bcrypt.hash(password, salt);
 
-            result.password = undefined;
-            res.send(result);
-        }
+        // 3. Create student instance with all 15 institutional fields
+        const student = new Student({
+            name,
+            rollNum,
+            password: hashedPass,
+            sclassName,
+            school: finalSchoolID,
+            email,
+            gender,
+            dob: dob ? new Date(dob) : null,
+            nationality: nationality || "Indian",
+            motherTongue,
+            religion,
+            caste,
+            subCaste,
+            birthPlace,
+            phone,
+            address,
+            role: "Student",
+            examResult: [],
+            attendance: []
+        });
+
+        let result = await student.save();
+
+        // 4. Return response without sensitive data
+        result.password = undefined;
+        res.status(200).send(result);
+
     } catch (err) {
-        res.status(500).json(err);
+        // Detailed logging to identify specific validation failures
+        console.error("Institutional Registry Error:", err);
+        res.status(500).json({ message: "Internal Registry Error", error: err.message });
     }
 };
 
@@ -170,12 +200,15 @@ const getStudentDetail = async (req, res) => {
 
 const deleteStudent = async (req, res) => {
     try {
-        const result = await Student.findByIdAndDelete(req.params.id)
-        res.send(result)
-    } catch (error) {
-        res.status(500).json(err);
+        const result = await Student.findByIdAndDelete(req.params.id);
+        if (!result) {
+            return res.status(404).json({ message: "Scholar record not found in registry." });
+        }
+        res.status(200).json({ message: "Scholar record successfully purged from the registry." });
+    } catch (err) {
+        res.status(500).json({ message: "Registry error: Could not complete de-enrollment.", error: err });
     }
-}
+};
 
 const deleteStudents = async (req, res) => {
     try {

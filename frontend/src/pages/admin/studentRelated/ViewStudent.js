@@ -3,21 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUserDetails } from '../../../redux/userRelated/userHandle';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
-import { Box, Button, Collapse, IconButton, Table, TableBody, TableHead, Typography, Tab, Paper, BottomNavigation, BottomNavigationAction, Container, Grid, CircularProgress } from '@mui/material';
+import { Box, Collapse, IconButton, Table, TableBody, TableHead, Typography, Tab, Paper, BottomNavigation, BottomNavigationAction, Container, Grid, CircularProgress } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { KeyboardArrowUp, KeyboardArrowDown, Delete as DeleteIcon, Person, Badge, School, Apartment } from '@mui/icons-material';
-import { removeStuff, updateStudentFields } from '../../../redux/studentRelated/studentHandle';
+import { updateStudentFields } from '../../../redux/studentRelated/studentHandle';
 import { calculateOverallAttendancePercentage, calculateSubjectAttendancePercentage, groupAttendanceBySubject } from '../../../components/attendanceCalculator';
 import CustomBarChart from '../../../components/CustomBarChart';
 import CustomPieChart from '../../../components/CustomPieChart';
 import { StyledTableCell, StyledTableRow } from '../../../components/styles';
 import styled from 'styled-components';
 
-import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
-import TableChartIcon from '@mui/icons-material/TableChart';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import Popup from '../../../components/Popup';
 
@@ -25,7 +23,7 @@ const ViewStudent = () => {
     const navigate = useNavigate();
     const params = useParams();
     const dispatch = useDispatch();
-    const { userDetails, response, loading, error } = useSelector((state) => state.user);
+    const { userDetails, loading } = useSelector((state) => state.user);
 
     const studentID = params.id;
     const address = "Student";
@@ -42,7 +40,7 @@ const ViewStudent = () => {
 
     const [openStates, setOpenStates] = useState({});
     const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState('');
     const [value, setValue] = useState('1');
     const [selectedSection, setSelectedSection] = useState('table');
 
@@ -52,10 +50,6 @@ const ViewStudent = () => {
 
     const handleChange = (event, newValue) => setValue(newValue);
     const handleSectionChange = (event, newSection) => setSelectedSection(newSection);
-
-    const removeHandler = (id, deladdress) => {
-        dispatch(removeStuff(id, deladdress)).then(() => dispatch(getUserDetails(studentID, address)));
-    };
 
     const removeSubAttendance = (subId) => {
         dispatch(updateStudentFields(studentID, { subId }, "RemoveStudentSubAtten")).then(() => dispatch(getUserDetails(studentID, address)));
@@ -97,11 +91,6 @@ const ViewStudent = () => {
                 </Box>
             )}
 
-            <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
-                <SecondaryButton onClick={() => setMessage("Delete restricted.") || setShowPopup(true)}>
-                    Deactivate Scholar Record
-                </SecondaryButton>
-            </Box>
         </DossierPaper>
     );
 
@@ -298,11 +287,6 @@ const Primary3DButton = styled.button`
     background-color: #1a1a1a; color: white; border: none; padding: 10px 20px; font-family: 'Georgia', serif;
     text-transform: uppercase; letter-spacing: 1px; cursor: pointer; box-shadow: 4px 4px 0px #7d6b5d; transition: all 0.2s;
     &:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #7d6b5d; }
-`;
-
-const SecondaryButton = styled.button`
-    background: none; border: 1px solid #d32f2f; color: #d32f2f; padding: 10px 20px; font-family: serif;
-    text-transform: uppercase; font-size: 0.75rem; cursor: pointer; &:hover { background-color: #fff5f5; }
 `;
 
 const ClassicSmallButton = styled.button`

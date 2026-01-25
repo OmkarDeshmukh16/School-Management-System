@@ -59,4 +59,24 @@ const deleteNotices = async (req, res) => {
     }
 }
 
-module.exports = { noticeCreate, noticeList, updateNotice, deleteNotice, deleteNotices };
+const FeeNotice = async (req, res) => {
+    try {
+        const { title, details, date, adminID, targetStudent } = req.body;
+
+        const notice = new Notice({
+            title,
+            details,
+            date,
+            school: adminID,
+            targetStudent, // Link notice to a specific student ID
+            category: 'Financial' 
+        });
+
+        const result = await notice.save();
+        res.send(result);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+module.exports = { noticeCreate, noticeList, updateNotice, deleteNotice, deleteNotices, FeeNotice };

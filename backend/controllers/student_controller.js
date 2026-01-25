@@ -381,6 +381,72 @@ const removeStudentAttendance = async (req, res) => {
     }
 };
 
+const collectFees = async (req, res) => {
+    try {
+        const { amount, paymentMethod } = req.body;
+        const student = await Student.findById(req.params.id);
+        const installment = Number(amount);
+
+        // Safety Check: Don't allow overpayment
+        if (installment > student.fees.balanceAmount) {
+            return res.status(400).json({ 
+                message: `Invalid Amount. Maximum payable is ₹${student.fees.balanceAmount}` 
+            });
+        }
+
+        if (!student) return res.status(404).json({ message: "Scholar not found" });
+
+        const paid = Number(amount);
+        student.fees.paidAmount += paid;
+        student.fees.balanceAmount = student.fees.totalAmount - student.fees.paidAmount;
+        
+        // Update Status automatically
+        if (student.fees.balanceAmount === 0) {
+            student.fees.paymentStatus = 'Paid';
+        } else {
+            student.fees.paymentStatus = 'Partial';
+        }
+
+        // Transaction History
+        student.fees.transactions.push({
+            amount: installment,
+            paymentMethod: paymentMethod + " (Offline)",
+            receiptNo: `OFF-${Date.now()}`,
+            date: new Date()
+        });
+
+        await student.save();
+        res.status(200).json({ message: "Transaction recorded in ledger" });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+const setClassFees = async (req, res) => {
+    try {
+        const { sclassName, totalAmount, school } = req.body;
+
+        // Update all students in the selected class who belong to this school
+        const result = await Student.updateMany(
+            { sclassName: sclassName, school: school },
+            { 
+                $set: { 
+                    "fees.totalAmount": Number(totalAmount),
+                    "fees.balanceAmount": Number(totalAmount) // Initially balance = total
+                } 
+            }
+        );
+
+        if (result.nModified === 0) {
+            return res.status(404).json({ message: "No students found in this cohort." });
+        }
+
+        res.status(200).json({ message: `Fees updated for ${result.modifiedCount} scholars.` });
+    } catch (err) {
+        res.status(500).json({ message: "Error updating class fees", error: err });
+    }
+};
+
 
 module.exports = {
     studentRegister,
@@ -399,4 +465,6 @@ module.exports = {
     removeStudentAttendanceBySubject,
     removeStudentAttendance,
     getStudentsByClass,
+    collectFees,
+    setClassFees,
 };

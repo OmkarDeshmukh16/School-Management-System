@@ -87,7 +87,23 @@ const studentSchema = new mongoose.Schema({
             ref: 'subject',
             required: true
         }
-    }]
+    }],
+    fees: {
+        totalAmount: { type: Number, default: 0 },
+        paidAmount: { type: Number, default: 0 },
+        balanceAmount: { type: Number, default: 0 },
+        paymentStatus: { 
+            type: String, 
+            enum: ['Paid', 'Pending', 'Partial'], 
+            default: 'Pending' 
+        },
+        transactions: [{
+            amount: Number,
+            date: { type: Date, default: Date.now },
+            paymentMethod: String, // e.g., Cash, UPI, Online
+            receiptNo: String
+        }]
+    }
 });
 
 module.exports = mongoose.model("student", studentSchema);

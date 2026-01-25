@@ -41,6 +41,22 @@ const StudentHomePage = () => {
         { name: 'Absent', value: overallAbsentPercentage }
     ];
 
+    const NotificationBell = ({ notices }) => {
+        return (
+            <Paper elevation={0} sx={{ p: 2, border: '1px solid #e0dcd0', bgcolor: '#fdfcf8' }}>
+                <SectionTitle>Official Notifications</SectionTitle>
+                {notices.map((notice) => (
+                    <NoticeItem key={notice._id} isFinancial={notice.category === 'Financial'}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                            {notice.title} {notice.category === 'Financial' && "⚠️"}
+                        </Typography>
+                        <Typography variant="body2">{notice.details}</Typography>
+                    </NoticeItem>
+                ))}
+            </Paper>
+        );
+    };
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <WelcomeHeader>
@@ -234,4 +250,11 @@ const ValueText = styled.p`
     font-size: 2.2rem;
     color: #1a1a1a;
     margin: 0;
+`;
+
+const NoticeItem = styled(Box)`
+    padding: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid ${props => props.isFinancial ? '#d32f2f' : '#1a1a1a'};
+    background: ${props => props.isFinancial ? '#fffbfa' : 'transparent'};
 `;

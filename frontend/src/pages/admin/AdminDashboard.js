@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
     CssBaseline,
     Box,
@@ -40,11 +41,13 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
+import ShowFees from './studentRelated/ShowFees';
+import FeeLedger from './studentRelated/FeeLedger';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => { setOpen(!open); };
-
+    const { currentUser } = useSelector((state) => state.user);
     return (
         <Box sx={{ display: 'flex', backgroundColor: '#f9f7f2', minHeight: '100vh' }}>
             <CssBaseline />
@@ -117,6 +120,10 @@ const AdminDashboard = () => {
                         <Route path="/Admin/students/student/:id" element={<ViewStudent />} />
                         <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance situation="Student" />} />
                         <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks situation="Student" />} />
+
+                        {/* --- Fee Routes --- */}
+                        <Route path="/Admin/fees" element={currentUser ? <ShowFees /> : <Navigate to="/Adminlogin" />} />
+                        <Route path="/Admin/students/student/fees/:id" element={<FeeLedger />} />
 
                         {/* Teacher Routes */}
                         <Route path="/Admin/teachers" element={<ShowTeachers />} />

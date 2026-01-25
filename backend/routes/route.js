@@ -21,13 +21,16 @@ const {
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
-    removeStudentAttendance } = require('../controllers/student_controller.js');
+    collectFees,
+    removeStudentAttendance,
+    setClassFees } = require('../controllers/student_controller.js');
 const { subjectCreate, classSubjects, deleteSubjectsByClass, getSubjectDetail, deleteSubject, freeSubjectList, allSubjects, deleteSubjects } = require('../controllers/subject-controller.js');
 const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeachers, deleteTeachersByClass, deleteTeacher, updateTeacherSubject, teacherAttendance } = require('../controllers/teacher-controller.js');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); 
 const { bulkStudentRegistration } = require('../controllers/student_controller.js');
-
+const { createOrder, verifyPayment } = require('../controllers/payment-controller');
+const { FeeNotice } = require('../controllers/notice-controller.js')
 
 // Admin
 router.post('/AdminReg', adminRegister);
@@ -123,4 +126,18 @@ router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 // Bulk Student Registration
 router.post('/BulkStudentReg', upload.single('excelFile'), bulkStudentRegistration);
 
+// --- FINANCIAL LEDGER & FEE MANAGEMENT ---
+// Admin: Record a manual cash/cheque payment
+router.put('/CollectFees/:id', collectFees);
+
+// Admin: Dispatch a financial demand notice
+router.post('/FeeNotice', FeeNotice);
+
+// --- ONLINE PAYMENT GATEWAY (RAZORPAY) ---
+// Student: Create a secure Razorpay Order
+router.post('/createOrder', createOrder);
+
+// Student: Verify signature and update ledger after payment
+router.post('/verifyPayment', verifyPayment);
+router.post('/SetClassFees', setClassFees);
 module.exports = router;

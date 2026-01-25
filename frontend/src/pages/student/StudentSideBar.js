@@ -9,6 +9,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const StudentSideBar = () => {
     const location = useLocation();
@@ -19,9 +20,9 @@ const StudentSideBar = () => {
     return (
         <>
             <NavSection>
-                <ClassicListItem 
-                    component={Link} 
-                    to="/" 
+                <ClassicListItem
+                    component={Link}
+                    to="/"
                     $active={isActive("/") || location.pathname === "/Student/dashboard"}
                 >
                     <ListItemIcon>
@@ -30,9 +31,9 @@ const StudentSideBar = () => {
                     <ListItemText primary="Institutional Home" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Student/subjects" 
+                <ClassicListItem
+                    component={Link}
+                    to="/Student/subjects"
                     $active={isActive("/Student/subjects")}
                 >
                     <ListItemIcon>
@@ -41,9 +42,9 @@ const StudentSideBar = () => {
                     <ListItemText primary="Academic Subjects" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Student/attendance" 
+                <ClassicListItem
+                    component={Link}
+                    to="/Student/attendance"
                     $active={isActive("/Student/attendance")}
                 >
                     <ListItemIcon>
@@ -52,9 +53,16 @@ const StudentSideBar = () => {
                     <ListItemText primary="Presence Registry" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Student/complain" 
+                <ClassicListItem component={Link} to="/Student/fees">
+                    <ListItemIcon>
+                        <AccountBalanceWalletIcon color={location.pathname === "/Student/fees" ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Fee Ledger" />
+                </ClassicListItem>
+
+                <ClassicListItem
+                    component={Link}
+                    to="/Student/complain"
                     $active={isActive("/Student/complain")}
                 >
                     <ListItemIcon>
@@ -71,9 +79,9 @@ const StudentSideBar = () => {
                     Scholar Identity
                 </ClassicListSubheader>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Student/profile" 
+                <ClassicListItem
+                    component={Link}
+                    to="/Student/profile"
                     $active={isActive("/Student/profile")}
                 >
                     <ListItemIcon>
@@ -82,9 +90,9 @@ const StudentSideBar = () => {
                     <ListItemText primary="Academic Profile" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/logout" 
+                <ClassicListItem
+                    component={Link}
+                    to="/logout"
                     $active={isActive("/logout")}
                 >
                     <ListItemIcon>

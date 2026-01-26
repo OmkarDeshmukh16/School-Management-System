@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Box, CircularProgress, Stack, TextField, Typography, Paper, Container } from '@mui/material';
+import { Box, Stack, TextField, Typography, Paper } from '@mui/material';
 import Popup from '../../components/Popup';
 import { addStuff } from '../../redux/userRelated/userHandle';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const StudentComplain = () => {
     const [complaint, setComplaint] = useState("");
     const [date, setDate] = useState("");
 
-    const dispatch = useDispatch()
-
     const { status, currentUser, error } = useSelector(state => state.user);
 
     const user = currentUser._id
     const school = currentUser.school._id
-    const address = "Complain"
 
     const [loader, setLoader] = useState(false)
     const [message, setMessage] = useState("");
@@ -23,11 +21,19 @@ const StudentComplain = () => {
 
     const fields = { user, date, complaint, school };
 
-    const submitHandler = (event) => {
-        event.preventDefault()
-        setLoader(true)
-        dispatch(addStuff(fields, address))
-    };
+    const submitGrievance = async () => {
+    try {
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/Complain`, {
+            user: currentUser._id,
+            complaint: complaint,
+            school: currentUser.school._id
+        });
+        alert("Grievance lodged in the official registry.");
+        setComplaint("");
+    } catch (err) {
+        alert("Submission failed.");
+    }
+};
 
     useEffect(() => {
         if (status === "added") {
@@ -52,7 +58,7 @@ const StudentComplain = () => {
                     <ClassicSubtitle>Formal documentation for administrative review and resolution</ClassicSubtitle>
                 </HeaderSection>
 
-                <form onSubmit={submitHandler}>
+                <form onSubmit={submitGrievance}>
                     <Stack spacing={4}>
                         <Box>
                             <LabelText>Incident Date</LabelText>
@@ -83,10 +89,8 @@ const StudentComplain = () => {
 
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
                             <Primary3DButton 
-                                type="submit" 
-                                disabled={loader}
+                                onClick={submitGrievance} sx={{ mt: 2 }}
                             >
-                                {loader ? <CircularProgress size={24} color="inherit" /> : "Authorize Submission"}
                             </Primary3DButton>
                         </Box>
                     </Stack>

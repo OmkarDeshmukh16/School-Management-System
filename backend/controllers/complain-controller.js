@@ -23,4 +23,13 @@ const complainList = async (req, res) => {
     }
 };
 
-module.exports = { complainCreate, complainList };
+const deleteComplain = async (req, res) => {
+    try {
+        const result = await Complain.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: "Grievance has been formally resolved and archived." });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
+
+module.exports = { complainCreate, complainList, deleteComplain };

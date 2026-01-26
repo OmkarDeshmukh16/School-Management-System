@@ -4,6 +4,7 @@ import { Paper, Box, Checkbox, Typography, CircularProgress } from '@mui/materia
 import styled from 'styled-components';
 import { getAllComplains } from '../../../redux/complainRelated/complainHandle';
 import TableTemplate from '../../../components/TableTemplate';
+import axios from 'axios';
 
 const SeeComplains = () => {
     const dispatch = useDispatch();
@@ -14,9 +15,17 @@ const SeeComplains = () => {
         dispatch(getAllComplains(currentUser._id, "Complain"));
     }, [currentUser._id, dispatch]);
 
-    if (error) {
-        console.log(error);
-    }
+    const handleResolve = async (id) => {
+        try {
+            const res = await axios.delete(`${process.env.REACT_APP_BASE_URL}/Complain/${id}`);
+            if (res.status === 200) {
+                // Re-fetch list to update UI after deletion
+                dispatch(getAllComplains(currentUser._id, "Complain"));
+            }
+        } catch (err) {
+            console.error("Resolution failed", err);
+        }
+    };
 
     const complainColumns = [
         { id: 'user', label: 'Petitioner', minWidth: 170 },
@@ -28,7 +37,8 @@ const SeeComplains = () => {
         const date = new Date(complain.date);
         const dateString = date.toString() !== "Invalid Date" ? date.toISOString().substring(0, 10) : "Invalid Date";
         return {
-            user: complain.user.name,
+            // FIX: Added optional chaining and fallback for null users
+            user: complain.user?.name || "Deleted Scholar/Anonymous",
             complaint: complain.complaint,
             date: dateString,
             id: complain._id,
@@ -41,6 +51,7 @@ const SeeComplains = () => {
                 <ClassicCheckbox 
                     color="default"
                     inputProps={{ 'aria-label': 'Mark as Resolved' }} 
+                    onChange={() => handleResolve(row.id)} // Link to resolve logic
                 />
                 <Typography sx={{ fontSize: '10px', fontFamily: 'serif', color: '#7d6b5d' }}>RESOLVE</Typography>
             </Box>

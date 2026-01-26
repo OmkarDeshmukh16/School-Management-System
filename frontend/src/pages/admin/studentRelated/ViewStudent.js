@@ -66,7 +66,10 @@ const ViewStudent = () => {
         subject: subName,
         attendancePercentage: calculateSubjectAttendancePercentage(present, sessions),
     }));
-
+    const chartMarksData = userDetails.examResult?.map(result => ({
+    subName: result.subName?.subName || "Unknown",
+    marksObtained: result.marksObtained
+})) || [];
     // --- SECTIONS ---
 
     const StudentDetailsSection = () => (
@@ -83,7 +86,7 @@ const ViewStudent = () => {
                     <InfoRow icon={<Apartment />} label="Institution" value={userDetails.school?.schoolName} />
                 </Grid>
             </Grid>
-            
+
             {subjectAttendance.length > 0 && (
                 <Box sx={{ mt: 5, p: 3, border: '1px solid #eee', textAlign: 'center' }}>
                     <Label>Cumulative Attendance Summary</Label>
@@ -155,8 +158,8 @@ const ViewStudent = () => {
                         </TableBody>
                     </Table>
                     <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                         <Typography variant="h6" sx={{ fontFamily: 'serif' }}>Overall: {overallAttendancePercentage.toFixed(2)}%</Typography>
-                         <Primary3DButton onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>Update Registry</Primary3DButton>
+                        <Typography variant="h6" sx={{ fontFamily: 'serif' }}>Overall: {overallAttendancePercentage.toFixed(2)}%</Typography>
+                        <Primary3DButton onClick={() => navigate("/Admin/students/student/attendance/" + studentID)}>Update Registry</Primary3DButton>
                     </Box>
                 </TablePaper>
             ) : (
@@ -184,7 +187,7 @@ const ViewStudent = () => {
                         <TableBody>
                             {userDetails.examResult?.map((result, index) => (
                                 <StyledTableRow key={index}>
-                                    <StyledTableCell>{result.subName?.subName}</StyledTableCell>
+                                    <StyledTableCell>{result.subName?.subName || "Unassigned Subject"}</StyledTableCell>
                                     <StyledTableCell>{result.marksObtained}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
@@ -195,7 +198,7 @@ const ViewStudent = () => {
                     </Box>
                 </>
             ) : (
-                <CustomBarChart chartData={userDetails.examResult || []} dataKey="marksObtained" />
+                <CustomBarChart chartData={chartMarksData} dataKey="marksObtained" />
             )}
             <FixedBottomNav value={selectedSection} onChange={handleSectionChange} />
         </TablePaper>

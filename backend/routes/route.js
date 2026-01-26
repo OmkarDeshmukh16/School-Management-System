@@ -5,19 +5,22 @@ const router = require('express').Router();
 const { adminRegister, adminLogIn, getAdminDetail} = require('../controllers/admin-controller.js');
 
 const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents } = require('../controllers/class-controller.js');
-const { complainCreate, complainList } = require('../controllers/complain-controller.js');
+const { complainCreate, complainList, deleteComplain } = require('../controllers/complain-controller.js');
 const { noticeCreate, noticeList, deleteNotices, deleteNotice, updateNotice } = require('../controllers/notice-controller.js');
 const {
     studentRegister,
     studentLogIn,
     getStudents,
     getStudentDetail,
+    sclassStudents,
     deleteStudents,
     deleteStudent,
     updateStudent,
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
+    updateBulkMarks,
+    updateBulkAttendance,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
@@ -48,6 +51,7 @@ router.post('/StudentLogin', studentLogIn)
 
 router.get("/Students/:id", getStudents)
 router.get("/Student/:id", getStudentDetail)
+router.get('/SclassStudents/:id', sclassStudents);
 
 router.delete("/Students/:id", deleteStudents)
 router.delete("/StudentsClass/:id", deleteStudentsByClass)
@@ -56,7 +60,7 @@ router.delete("/Student/:id", deleteStudent)
 router.put("/Student/:id", updateStudent)
 
 router.put('/UpdateExamResult/:id', updateExamResult)
-
+router.put('/UpdateBulkMarks', updateBulkMarks);
 router.put('/StudentAttendance/:id', studentAttendance)
 
 router.put('/RemoveAllStudentsSubAtten/:id', clearAllStudentsAttendanceBySubject);
@@ -80,7 +84,7 @@ router.delete("/Teacher/:id", deleteTeacher)
 router.put("/TeacherSubject", updateTeacherSubject)
 
 router.post('/TeacherAttendance/:id', teacherAttendance)
-
+router.put('/UpdateBulkAttendance', updateBulkAttendance);
 // Notice
 
 router.post('/NoticeCreate', noticeCreate);
@@ -95,8 +99,9 @@ router.put("/Notice/:id", updateNotice)
 // Complain
 
 router.post('/ComplainCreate', complainCreate);
-
 router.get('/ComplainList/:id', complainList);
+router.delete('/Complain/:id', deleteComplain);
+
 
 // Sclass
 

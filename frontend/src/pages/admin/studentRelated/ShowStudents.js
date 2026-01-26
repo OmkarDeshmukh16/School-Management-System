@@ -16,6 +16,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FilterListIcon from '@mui/icons-material/FilterList';
+//import { calculateOverallAttendancePercentage } from '../../../components/attendanceCalculator';
 
 // Components
 import TableTemplate from '../../../components/TableTemplate';
@@ -108,7 +109,7 @@ const ShowStudents = () => {
         { id: 'rollNum', label: 'Roll No.', minWidth: 100 },
         { id: 'sclassName', label: 'Designated Class', minWidth: 170 },
     ];
-
+    
     const studentRows = filteredStudents?.map((student) => ({
         name: student.name,
         rollNum: student.rollNum,

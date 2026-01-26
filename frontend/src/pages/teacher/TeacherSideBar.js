@@ -10,6 +10,8 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const TeacherSideBar = () => {
     const { currentUser } = useSelector((state) => state.user);
@@ -22,9 +24,9 @@ const TeacherSideBar = () => {
     return (
         <>
             <NavSection>
-                <ClassicListItem 
-                    component={Link} 
-                    to="/" 
+                <ClassicListItem
+                    component={Link}
+                    to="/"
                     $active={isActive("/") || location.pathname === "/Teacher/dashboard"}
                 >
                     <ListItemIcon>
@@ -33,9 +35,9 @@ const TeacherSideBar = () => {
                     <ListItemText primary="Institutional Home" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Teacher/class" 
+                <ClassicListItem
+                    component={Link}
+                    to="/Teacher/class"
                     $active={isActive("/Teacher/class")}
                 >
                     <ListItemIcon>
@@ -44,15 +46,29 @@ const TeacherSideBar = () => {
                     <ListItemText primary={`Class Registry: ${sclassName?.sclassName}`} />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Teacher/complain" 
+                <ClassicListItem
+                    component={Link}
+                    to="/Teacher/complain"
                     $active={isActive("/Teacher/complain")}
                 >
                     <ListItemIcon>
                         <AnnouncementOutlinedIcon fontSize="small" color="inherit" />
                     </ListItemIcon>
                     <ListItemText primary="Grievance Submission" />
+                </ClassicListItem>
+
+                <ClassicListItem component={Link} to="/Teacher/marks">
+                    <ListItemIcon>
+                        <AssignmentTurnedInIcon color={location.pathname === "/Teacher/marks" ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Enter Marks" />
+                </ClassicListItem>
+
+                <ClassicListItem  component={Link} to="/Teacher/attendance">
+                    <ListItemIcon>
+                        <CheckCircleOutlineIcon color={location.pathname === "/Teacher/attendance" ? 'primary' : 'inherit'} />
+                    </ListItemIcon>
+                    <ListItemText primary="Mark Attendance" />
                 </ClassicListItem>
             </NavSection>
 
@@ -62,10 +78,10 @@ const TeacherSideBar = () => {
                 <ClassicListSubheader component="div" inset>
                     Personnel Record
                 </ClassicListSubheader>
-                
-                <ClassicListItem 
-                    component={Link} 
-                    to="/Teacher/profile" 
+
+                <ClassicListItem
+                    component={Link}
+                    to="/Teacher/profile"
                     $active={isActive("/Teacher/profile")}
                 >
                     <ListItemIcon>
@@ -74,9 +90,9 @@ const TeacherSideBar = () => {
                     <ListItemText primary="Faculty Profile" />
                 </ClassicListItem>
 
-                <ClassicListItem 
-                    component={Link} 
-                    to="/logout" 
+                <ClassicListItem
+                    component={Link}
+                    to="/logout"
                     $active={isActive("/logout")}
                 >
                     <ListItemIcon>

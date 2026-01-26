@@ -18,7 +18,8 @@ const complainSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',
         required: true,
-    }
+    },
+    status: { type: String, default: 'Pending' }
 });
 
 module.exports = mongoose.model("complain", complainSchema);

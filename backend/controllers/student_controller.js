@@ -184,7 +184,7 @@ const getStudentDetail = async (req, res) => {
         let student = await Student.findById(req.params.id)
             .populate("school", "schoolName")
             .populate("sclassName", "sclassName")
-            .populate("examResult.subName", "subName")
+            .populate("examResult.subName")
             .populate("attendance.subName", "subName sessions");
         if (student) {
             student.password = undefined;
@@ -197,6 +197,19 @@ const getStudentDetail = async (req, res) => {
         res.status(500).json(err);
     }
 }
+
+const sclassStudents = async (req, res) => {
+    try {
+        const students = await Student.find({ sclassName: req.params.id });
+        if (students.length > 0) {
+            res.send(students);
+        } else {
+            res.send({ message: "No students found in this cohort" });
+        }
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 const deleteStudent = async (req, res) => {
     try {
@@ -317,6 +330,32 @@ const studentAttendance = async (req, res) => {
         return res.send(result);
     } catch (error) {
         res.status(500).json(error);
+    }
+};
+
+const updateBulkAttendance = async (req, res) => {
+    try {
+        const { attendanceData, date, subId } = req.body;
+
+        const updatePromises = attendanceData.map(item => 
+            Student.updateOne(
+                { _id: item.studentId },
+                { 
+                    $push: { 
+                        attendance: { 
+                            date, 
+                            status: item.status, 
+                            subName: subId 
+                        } 
+                    } 
+                }
+            )
+        );
+
+        await Promise.all(updatePromises);
+        res.status(200).json({ message: "Attendance registry synchronized." });
+    } catch (err) {
+        res.status(500).json(err);
     }
 };
 
@@ -447,16 +486,35 @@ const setClassFees = async (req, res) => {
     }
 };
 
+const updateBulkMarks = async (req, res) => {
+    try {
+        const { marksData } = req.body;
+
+        const updatePromises = marksData.map(item => 
+            Student.updateOne(
+                { _id: item.studentID, "examResult.subName": item.subID },
+                { $set: { "examResult.$.marksObtained": item.marksObtained } }
+            )
+        );
+
+        await Promise.all(updatePromises);
+        res.status(200).json({ message: "Academic records updated successfully." });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 module.exports = {
     studentRegister,
     studentLogIn,
     getStudents,
     getStudentDetail,
+    sclassStudents,
     deleteStudents,
     deleteStudent,
     updateStudent,
     studentAttendance,
+    updateBulkAttendance,
     deleteStudentsByClass,
     updateExamResult,
     bulkStudentRegistration,
@@ -467,4 +525,5 @@ module.exports = {
     getStudentsByClass,
     collectFees,
     setClassFees,
+    updateBulkMarks
 };

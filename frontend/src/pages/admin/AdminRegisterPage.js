@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Box, Typography, Paper, Checkbox, FormControlLabel, TextField, CssBaseline, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import bgpic from "../../assets/designlogin.jpg"
+import reg from "../../assets/reg.jpg"
 import { registerUser } from '../../redux/userRelated/userHandle';
 import styled from 'styled-components';
 import Popup from '../../components/Popup';
@@ -156,7 +156,7 @@ const AdminRegisterPage = () => {
 
                 <Grid item xs={false} sm={4} md={7}
                     sx={{
-                        backgroundImage: `url(${bgpic})`,
+                        backgroundImage: `url(${reg})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',

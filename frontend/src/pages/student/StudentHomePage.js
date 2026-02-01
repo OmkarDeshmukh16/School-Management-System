@@ -14,9 +14,9 @@ import { getSubjectList } from '../../redux/sclassRelated/sclassHandle';
 const StudentHomePage = () => {
     const dispatch = useDispatch();
 
-    const { userDetails, currentUser, loading, response } = useSelector((state) => state.user);
+    const { userDetails, currentUser, loading } = useSelector((state) => state.user);
     const { subjectsList } = useSelector((state) => state.sclass);
-
+    const student = userDetails || {};
     const [subjectAttendance, setSubjectAttendance] = useState([]);
 
     const classID = currentUser.sclassName._id
@@ -41,6 +41,8 @@ const StudentHomePage = () => {
         { name: 'Absent', value: overallAbsentPercentage }
     ];
 
+    const fees = student.fees || { totalAmount: 0, paidAmount: 0, balanceAmount: 0 };
+
     const NotificationBell = ({ notices }) => {
         return (
             <Paper elevation={0} sx={{ p: 2, border: '1px solid #e0dcd0', bgcolor: '#fdfcf8' }}>
@@ -61,7 +63,7 @@ const StudentHomePage = () => {
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <WelcomeHeader>
                 <TypographyClassic variant="h4">Student Dashboard</TypographyClassic>
-                <TypographySubtitle>Academic progress and attendance summary for {currentUser.name}</TypographySubtitle>
+                <TypographySubtitle>Academic progress and attendance summary for <b>{currentUser.name}</b> </TypographySubtitle>
             </WelcomeHeader>
 
             <Grid container spacing={4}>
@@ -82,8 +84,8 @@ const StudentHomePage = () => {
                         <IconBox>
                             <img src={AssignmentIcon} alt="Assignments" style={{ width: '50px' }} />
                         </IconBox>
-                        <MetricTitle>Active Tasks</MetricTitle>
-                        <MetricData start={0} end={15} duration={4} />
+                        <MetricTitle>Pending fees</MetricTitle>
+                        <MetricData start={0} end={fees.balanceAmount} duration={4} />
                     </Classic3DCard>
                 </Grid>
 
@@ -94,19 +96,32 @@ const StudentHomePage = () => {
                         <ChartFlexBox>
                             {loading ? (
                                 <CircularProgress color="inherit" />
-                            ) : subjectAttendance.length > 0 ? (
+                            ) : subjectAttendance && subjectAttendance.length > 0 ? (
                                 <>
-                                    <Box sx={{ width: '200px' }}>
+                                    {/* Centered Chart Wrapper */}
+                                    <Box sx={{
+                                        width: '180px',
+                                        height: '160px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        overflow: 'hidden' // Prevents chart bleeding
+                                    }}>
                                         <CustomPieChart data={chartData} />
                                     </Box>
-                                    <Box sx={{ textAlign: 'left' }}>
+
+                                    {/* Refined Typography for Percentage */}
+                                    <Box sx={{ borderLeft: '1px solid #e0dcd0', pl: 4, py: 1 }}>
                                         <Label>Overall Attendance</Label>
                                         <ValueText>{overallAttendancePercentage.toFixed(1)}%</ValueText>
+                                        <Typography variant="caption" sx={{ fontFamily: 'serif', color: '#7d6b5d', fontStyle: 'italic' }}>
+                                            {overallAttendancePercentage >= 75 ? "Status: Eligible" : "Status: Risk Alert"}
+                                        </Typography>
                                     </Box>
                                 </>
                             ) : (
-                                <Typography variant="body2" sx={{ fontFamily: 'serif', fontStyle: 'italic' }}>
-                                    No attendance records found in the ledger.
+                                <Typography variant="body2" sx={{ fontFamily: 'serif', fontStyle: 'italic', color: '#7d6b5d' }}>
+                                    The attendance ledger is currently empty.
                                 </Typography>
                             )}
                         </ChartFlexBox>
@@ -177,20 +192,23 @@ const Classic3DCard = styled(Paper)`
 
 const ChartPaper = styled(Paper)`
     && {
-        padding: 30px;
+        padding: 25px;
         height: 240px;
         background-color: #ffffff;
         border: 1px solid #e0dcd0;
         border-radius: 0;
         box-shadow: 6px 6px 0px #e0dcd0;
+        display: flex;
+        flex-direction: column;
     }
 `;
 
 const ChartFlexBox = styled(Box)`
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
+    justify-content: space-around;
+    height: calc(100% - 60px);
+    padding: 0 10px;
 `;
 
 const IconBox = styled(Box)`

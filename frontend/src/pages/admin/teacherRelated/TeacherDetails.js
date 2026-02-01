@@ -36,7 +36,7 @@ const TeacherDetails = () => {
                 <Container maxWidth="md">
                     <DossierPaper elevation={0}>
                         <HeaderSection>
-                            <ClassicTitle variant="h4">Faculty Dossier</ClassicTitle>
+                            <ClassicTitle variant="h4">Faculty Information</ClassicTitle>
                             <ClassicSubtitle>Official personnel record and academic assignments</ClassicSubtitle>
                         </HeaderSection>
 

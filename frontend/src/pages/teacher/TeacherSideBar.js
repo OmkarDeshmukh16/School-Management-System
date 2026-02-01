@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import HomeIcon from '@mui/icons-material/Home';
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ClassOutlinedIcon from '@mui/icons-material/ClassOutlined';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -44,17 +43,6 @@ const TeacherSideBar = () => {
                         <ClassOutlinedIcon fontSize="small" color="inherit" />
                     </ListItemIcon>
                     <ListItemText primary={`Class Registry: ${sclassName?.sclassName}`} />
-                </ClassicListItem>
-
-                <ClassicListItem
-                    component={Link}
-                    to="/Teacher/complain"
-                    $active={isActive("/Teacher/complain")}
-                >
-                    <ListItemIcon>
-                        <AnnouncementOutlinedIcon fontSize="small" color="inherit" />
-                    </ListItemIcon>
-                    <ListItemText primary="Grievance Submission" />
                 </ClassicListItem>
 
                 <ClassicListItem component={Link} to="/Teacher/marks">

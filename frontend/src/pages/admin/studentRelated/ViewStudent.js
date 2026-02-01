@@ -74,7 +74,7 @@ const ViewStudent = () => {
 
     const StudentDetailsSection = () => (
         <DossierPaper elevation={0}>
-            <TypographyClassic variant="h4">Scholar Information</TypographyClassic>
+            <TypographyClassic variant="h4">Student Information</TypographyClassic>
             <DividerClassic />
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
@@ -212,7 +212,7 @@ const ViewStudent = () => {
                 <TabContext value={value}>
                     <FixedTabListContainer>
                         <StyledTabList onChange={handleChange} centered>
-                            <StyledTab label="Scholar Dossier" value="1" />
+                            <StyledTab label="Student Information" value="1" />
                             <StyledTab label="Attendance Registry" value="2" />
                             <StyledTab label="Examination Grades" value="3" />
                         </StyledTabList>

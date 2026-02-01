@@ -110,7 +110,7 @@ const ViewSubject = () => {
 
     const SubjectDetailsSection = () => (
         <DossierPaper elevation={0}>
-            <TypographyClassic variant="h4">Subject Dossier</TypographyClassic>
+            <TypographyClassic variant="h4">Subject Report</TypographyClassic>
             <DividerClassic />
             <Grid container spacing={4}>
                 <Grid item xs={12} md={6}>
@@ -119,7 +119,7 @@ const ViewSubject = () => {
                     <InfoRow icon={<SchoolIcon />} label="Academic Sessions" value={subjectDetails?.sessions} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <InfoRow icon={<ClassIcon />} label="Assigned Class" value={subjectDetails?.sclassName?.sclassName} />
+                    <InfoRow icon={<ClassIcon />} label="Class" value={subjectDetails?.sclassName?.sclassName} />
                     <InfoRow icon={<PersonIcon />} label="Assigned Faculty" value={subjectDetails?.teacher?.name || "Unassigned"} />
                     <Box sx={{ mt: 2 }}>
                         {!subjectDetails?.teacher && (

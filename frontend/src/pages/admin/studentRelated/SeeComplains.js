@@ -51,7 +51,7 @@ const SeeComplains = () => {
                 <ClassicCheckbox 
                     color="default"
                     inputProps={{ 'aria-label': 'Mark as Resolved' }} 
-                    onChange={() => handleResolve(row.id)} // Link to resolve logic
+                    onChange={() => handleResolve(row.id)}
                 />
                 <Typography sx={{ fontSize: '10px', fontFamily: 'serif', color: '#7d6b5d' }}>RESOLVE</Typography>
             </Box>

@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import bgpic from "../assets/designlogin.jpg"; // Keep your asset
+import login from "../assets/login.jpg"; // Keep your asset
 import styled from 'styled-components';
 import { loginUser } from '../redux/userRelated/userHandle';
 import Popup from '../components/Popup';
@@ -169,7 +169,7 @@ const LoginPage = ({ role }) => {
                 
                 <Grid item xs={false} sm={4} md={7}
                     sx={{
-                        backgroundImage: `url(${bgpic})`,
+                        backgroundImage: `url(${login})`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         filter: 'grayscale(20%) contrast(1.1)', // Classic editorial photo filter

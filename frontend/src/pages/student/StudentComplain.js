@@ -23,15 +23,17 @@ const StudentComplain = () => {
 
     const submitGrievance = async () => {
     try {
-        await axios.post(`${process.env.REACT_APP_BASE_URL}/Complain`, {
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/ComplainCreate`, {
             user: currentUser._id,
             complaint: complaint,
-            school: currentUser.school._id
+            school: currentUser.school._id,
+            date: new Date(),
         });
         alert("Grievance lodged in the official registry.");
         setComplaint("");
     } catch (err) {
         alert("Submission failed.");
+        console.error(err);
     }
 };
 
@@ -90,7 +92,7 @@ const StudentComplain = () => {
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
                             <Primary3DButton 
                                 onClick={submitGrievance} sx={{ mt: 2 }}
-                            >
+                            >Submit
                             </Primary3DButton>
                         </Box>
                     </Stack>

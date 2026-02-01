@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { getAllSclasses } from '../../redux/sclassRelated/sclassHandle';
 import { getAllStudents } from '../../redux/studentRelated/studentHandle';
 import { getAllTeachers } from '../../redux/teacherRelated/teacherHandle';
+import axios from 'axios';
+import { useState } from 'react';
 
 const AdminHomePage = () => {
     const dispatch = useDispatch();
@@ -44,7 +46,7 @@ const AdminHomePage = () => {
                     { title: "Total Students", value: numberOfStudents, img: Students },
                     { title: "Total Classes", value: numberOfClasses, img: Classes },
                     { title: "Total Teachers", value: numberOfTeachers, img: Teachers },
-                    { title: "Fees Collection", value: 23000, img: Fees, prefix: "$" }
+                    
                 ].map((item, index) => (
                     <Grid item xs={12} md={3} key={index}>
                         <Classic3DCard>
@@ -53,11 +55,11 @@ const AdminHomePage = () => {
                             </IconBox>
                             <ContentBox>
                                 <MetricTitle>{item.title}</MetricTitle>
-                                <MetricData 
-                                    start={0} 
-                                    end={item.value} 
-                                    duration={2} 
-                                    prefix={item.prefix || ""} 
+                                <MetricData
+                                    start={0}
+                                    end={item.value}
+                                    duration={2}
+                                    prefix={item.prefix || ""}
                                 />
                             </ContentBox>
                         </Classic3DCard>

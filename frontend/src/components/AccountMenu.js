@@ -55,12 +55,6 @@ const AccountMenu = () => {
                     </Link>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
                 <MenuItem>
                     <ListItemIcon>
                         <Logout fontSize="small" />

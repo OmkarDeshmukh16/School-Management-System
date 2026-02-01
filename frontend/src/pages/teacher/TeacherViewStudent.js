@@ -44,7 +44,7 @@ const TeacherViewStudent = () => {
                 <Container maxWidth="lg">
                     <DossierPaper elevation={0}>
                         <HeaderSection>
-                            <ClassicTitle variant="h4">Scholar Dossier</ClassicTitle>
+                            <ClassicTitle variant="h4">Student Information</ClassicTitle>
                             <ClassicSubtitle>Comprehensive academic performance and presence record</ClassicSubtitle>
                         </HeaderSection>
 

@@ -15,7 +15,7 @@ const StudentProfile = () => {
             <Container maxWidth="lg">
                 <DossierPaper elevation={0}>
                     <HeaderSection>
-                        <ClassicTitle variant="h4">Scholar Identification Dossier</ClassicTitle>
+                        <ClassicTitle variant="h4">Scholar Identification</ClassicTitle>
                         <ClassicSubtitle>Official comprehensive record — Restricted Access</ClassicSubtitle>
                     </HeaderSection>
 
@@ -23,15 +23,12 @@ const StudentProfile = () => {
                         {/* LEFT COLUMN: IDENTIFICATION */}
                         <Grid item xs={12} md={4}>
                             <Box display="flex" flexDirection="column" alignItems="center">
-                                <SquareAvatar variant="square">
-                                    {String(currentUser.name).charAt(0)}
-                                </SquareAvatar>
                                 <Box sx={{ mt: 3, textAlign: 'center', width: '100%' }}>
                                     <Label>Institutional Status</Label>
-                                    <StatusPill>Active Scholar</StatusPill>
+                                    <StatusPill>Active Student</StatusPill>
                                     <Divider sx={{ my: 2 }} />
-                                    <InfoRow icon={<Badge />} label="Enrollment No." value={currentUser.rollNum} />
-                                    <InfoRow icon={<School />} label="Cohort" value={currentUser.sclassName?.sclassName} />
+                                    <InfoRow icon={<School />} label="Class" value={currentUser.sclassName?.sclassName} />
+                                    <InfoRow icon={<Badge />} label="Roll No." value={currentUser.rollNum} />
                                 </Box>
                             </Box>
                         </Grid>
@@ -80,10 +77,10 @@ const StudentProfile = () => {
                             <SectionHeading>Communication Channels</SectionHeading>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>
-                                    <InfoRow icon={<Email />} label="Electronic Mail" value={currentUser.email} />
+                                    <InfoRow icon={<Email />} label="E-Mail" value={currentUser.email} />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
-                                    <InfoRow icon={<Phone />} label="Primary Mobile" value={currentUser.phone} />
+                                    <InfoRow icon={<Phone />} label="Mobile Number" value={currentUser.phone} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <InfoRow icon={<Home />} label="Residential Address" value={currentUser.address} />

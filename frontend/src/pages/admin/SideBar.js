@@ -69,14 +69,14 @@ const SideBar = () => {
                     <ClassicListItemIcon>
                         <FileUploadIcon fontSize="small" color="inherit" />
                     </ClassicListItemIcon>
-                    <ListItemText primary="Bulk Enrollment" />
+                    <ClassicListItemText primary="Bulk Enrollment" />
                 </ClassicNavButton>
 
                 <ClassicNavButton component={Link} to="/Admin/fees">
                     <ClassicListItemIcon>
                         <AccountBalanceWalletIcon color={location.pathname.startsWith("/Admin/fees") ? 'primary' : 'inherit'} />
                     </ClassicListItemIcon>
-                    <ListItemText primary="Fee Ledger" />
+                    <ClassicListItemText primary="Fee Ledger" />
                 </ClassicNavButton>
 
                 <ClassicNavButton component={Link} to="/Admin/notices" className={isActive("/Admin/notices") ? "active" : ""}>

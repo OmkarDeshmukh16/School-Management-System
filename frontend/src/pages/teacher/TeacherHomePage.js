@@ -18,6 +18,7 @@ const TeacherHomePage = () => {
 
     const classID = currentUser.teachSclass?._id;
     const subjectID = currentUser.teachSubject?._id;
+    const teachSubject = currentUser.teachSubject;
 
     useEffect(() => {
         dispatch(getSubjectDetails(subjectID, "Subject"));
@@ -38,9 +39,8 @@ const TeacherHomePage = () => {
                 {/* Metric Cards */}
                 {[
                     { title: "Class Students", value: numberOfStudents, img: Students },
-                    { title: "Total Lessons", value: numberOfSessions, img: Lessons },
-                    { title: "Tests Taken", value: 24, img: Tests },
-                    { title: "Total Hours", value: 30, img: Time, suffix: "hrs" }
+                    { title: "Total Lectures", value: numberOfSessions, img: Lessons },
+                    { title: "Assigned Subject", value: teachSubject?.subName || "Not Assigned", img: Tests, isText: true },
                 ].map((item, index) => (
                     <Grid item xs={12} md={3} key={index}>
                         <Classic3DCard>
@@ -49,12 +49,26 @@ const TeacherHomePage = () => {
                             </IconBox>
                             <ContentBox>
                                 <MetricTitle>{item.title}</MetricTitle>
-                                <MetricData 
-                                    start={0} 
-                                    end={item.value} 
-                                    duration={2.5} 
-                                    suffix={item.suffix || ""} 
-                                />
+                                {item.isText ? (
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            fontFamily: 'Georgia',
+                                            fontWeight: 'bold',
+                                            color: '#1a1a1a',
+                                            mt: 1
+                                        }}
+                                    >
+                                        {item.value}
+                                    </Typography>
+                                ) : (
+                                    <MetricData
+                                        start={0}
+                                        end={item.value}
+                                        duration={2.5}
+                                        suffix={item.suffix || ""}
+                                    />
+                                )}
                             </ContentBox>
                         </Classic3DCard>
                     </Grid>

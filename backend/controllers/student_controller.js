@@ -65,8 +65,11 @@ const studentRegister = async (req, res) => {
     try {
         const { 
             name, rollNum, password, sclassName, school, adminID,
-            email, gender, dob, nationality, motherTongue, 
-            religion, caste, subCaste, birthPlace, phone, address 
+            email, gender, dob, birthDateInWords, nationality, 
+            motherTongue, religion, caste, subCaste, birthPlace, 
+            phone, address, generalRegisterNo, penNumber, uid, 
+            motherName, admissionDate, previousSchoolName, previousSchoolStandard, 
+            dateOfLeaving, progress, conduct, reasonOfLeaving, remarks, village, taluka, district
         } = req.body;
 
         // Ensure we capture the school ID regardless of which key the frontend uses
@@ -94,9 +97,20 @@ const studentRegister = async (req, res) => {
             password: hashedPass,
             sclassName,
             school: finalSchoolID,
+            generalRegisterNo, 
+            penNumber,         
+            uid,                
+            motherName,         
+            admissionDate,      
+            previousSchoolName, 
+            previousSchoolStandard, 
+            village,            
+            taluka,             
+            district,
             email,
             gender,
             dob: dob ? new Date(dob) : null,
+            birthDateInWords,
             nationality: nationality || "Indian",
             motherTongue,
             religion,

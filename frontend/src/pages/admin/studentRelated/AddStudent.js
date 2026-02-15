@@ -28,19 +28,62 @@ const AddStudent = () => {
         gender: '',
         password: '',
         dob: '',
+        birthDateInWords: '',
+        generalRegisterNo: '',
+        uid: '',
+        penNumber: '',
+        motherName: '',
+        village: '',
+        taluka: '',
+        district: '',
+        previousSchoolName: '',
+        previousSchoolStandard: '',
+        admissionDate: '',
         nationality: 'Indian',
         motherTongue: '',
         religion: '',
         caste: '',
         subCaste: '',
         birthPlace: '',
+        progress: 'Good',
+        conduct: 'Good',
+        academicYear: '',
+        remarks: '',
         phone: '',
         address: ''
     });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        if (name === "dob") {
+            setFormData({
+                ...formData,
+                [name]: value,
+                birthDateInWords: convertDateToWords(value) // Auto-fill
+            });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
+    const convertDateToWords = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'long' }).toUpperCase();
+        const year = date.getFullYear();
+
+        const ones = ["", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH", "NINTH", "TENTH",
+            "ELEVENTH", "TWELFTH", "THIRTEENTH", "FOURTEENTH", "FIFTEENTH", "SIXTEENTH", "SEVENTEENTH",
+            "EIGHTEENTH", "NINETEENTH"];
+        const tens = ["", "", "TWENTY", "THIRTY"];
+
+        const dayWord = day < 20 ? ones[day] : tens[Math.floor(day / 10)] + (day % 10 !== 0 ? " " + ones[day % 10] : "");
+
+        // Simple year to words logic for 2000-2099
+        const yearWord = "TWO THOUSAND " + (year % 100 < 20 ? ones[year % 100] : tens[Math.floor((year % 100) / 10)] + " " + ones[year % 100 % 10]);
+
+        return `${dayWord} ${month} ${yearWord}`;
     };
 
     const submitHandler = (event) => {
@@ -61,7 +104,7 @@ const AddStudent = () => {
             setLoader(false);
             setMessage("Student successfully enrolled in the registry.");
             setShowPopup(true);
-            
+
             // Navigate back after short delay
             setTimeout(() => navigate(-1), 2000);
         } else if (status === 'failed') {
@@ -85,12 +128,41 @@ const AddStudent = () => {
                         <Box>
                             <SectionHeading>Academic Identity</SectionHeading>
                             <Grid container spacing={2}>
+                                <Grid item xs={4}>
+                                    <LabelText>GR no.</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="generalRegisterNo"
+                                        value={formData.generalRegisterNo}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelText>Aadhar (UID) no.</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="uid"
+                                        value={formData.uid}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelText>Pen no.</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="penNumber"
+                                        value={formData.penNumber}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
                                 <Grid item xs={12} md={6}>
                                     <LabelText>Full Name</LabelText>
                                     <ClassicTextField fullWidth name="name" required value={formData.name} onChange={handleInputChange} />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
-                                    <LabelText>Target Academic Cohort</LabelText>
+                                    <LabelText>Academic Details</LabelText>
                                     <FormControl fullWidth required>
                                         <ClassicSelect
                                             name="sclassName"
@@ -120,11 +192,28 @@ const AddStudent = () => {
 
                         {/* SECTION 2: DEMOGRAPHIC REGISTRY */}
                         <Box>
-                            <SectionHeading>Demographic Registry</SectionHeading>
+                            <SectionHeading>Personal Details</SectionHeading>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={4}>
+                                <Grid item xs={4}>
                                     <LabelText>Date of Birth</LabelText>
-                                    <ClassicTextField fullWidth name="dob" type="date" value={formData.dob} onChange={handleInputChange} InputLabelProps={{ shrink: true }} />
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="dob"
+                                        type="date"
+                                        value={formData.dob}
+                                        onChange={handleInputChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <LabelText>Date in Words (Auto-Generated)</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="birthDateInWords"
+                                        value={formData.birthDateInWords}
+                                        InputProps={{ readOnly: true }}
+                                        variant="filled"
+                                    />
                                 </Grid>
                                 <Grid item xs={12} md={4}>
                                     <LabelText>Gender</LabelText>
@@ -152,6 +241,45 @@ const AddStudent = () => {
                                     <LabelText>Sub-Caste</LabelText>
                                     <ClassicTextField fullWidth name="subCaste" value={formData.subCaste} onChange={handleInputChange} />
                                 </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <LabelText>Mother's Full Name</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="motherName"
+                                        value={formData.motherName}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <LabelText>Date of Admission to This School</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        type="date"
+                                        name="admissionDate"
+                                        value={formData.admissionDate}
+                                        onChange={handleInputChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={8}>
+                                    <LabelText>Previous School Attended</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="previousSchoolName"
+                                        value={formData.previousSchoolName}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <LabelText>Last Standard Studied</LabelText>
+                                    <ClassicTextField
+                                        fullWidth
+                                        name="previousSchoolStandard"
+                                        value={formData.previousSchoolStandard}
+                                        onChange={handleInputChange}
+                                    />
+                                </Grid>
                             </Grid>
                         </Box>
 
@@ -178,6 +306,18 @@ const AddStudent = () => {
                                 <Grid item xs={12}>
                                     <LabelText>Permanent Residential Address</LabelText>
                                     <ClassicTextField fullWidth name="address" multiline rows={2} value={formData.address} onChange={handleInputChange} />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelText>Village/City</LabelText>
+                                    <ClassicTextField fullWidth name="village" value={formData.village} onChange={handleInputChange} />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelText>Taluka</LabelText>
+                                    <ClassicTextField fullWidth name="taluka" value={formData.taluka} onChange={handleInputChange} />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <LabelText>District</LabelText>
+                                    <ClassicTextField fullWidth name="district" value={formData.district} onChange={handleInputChange} />
                                 </Grid>
                             </Grid>
                         </Box>

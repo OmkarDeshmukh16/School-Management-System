@@ -43,6 +43,7 @@ import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
 import ShowFees from './studentRelated/ShowFees';
 import FeeLedger from './studentRelated/FeeLedger';
+import LivingCertificate from './LivingCertificate';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
@@ -93,6 +94,7 @@ const AdminDashboard = () => {
                         <Route path="/Admin/dashboard" element={<AdminHomePage />} />
                         <Route path="/Admin/profile" element={<AdminProfile />} />
                         <Route path="/Admin/complains" element={<SeeComplains />} />
+                        <Route path="/Admin/students/student/lc/:id" element={<LivingCertificate />} />
 
                         {/* Notice Routes */}
                         <Route path="/Admin/addnotice" element={<AddNotice />} />

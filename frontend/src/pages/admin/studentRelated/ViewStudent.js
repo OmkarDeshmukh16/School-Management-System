@@ -51,6 +51,11 @@ const ViewStudent = () => {
     const handleChange = (event, newValue) => setValue(newValue);
     const handleSectionChange = (event, newSection) => setSelectedSection(newSection);
 
+    const handleIssueLC = () => {
+        // Navigate to the new LC generator path we discussed
+        navigate(`/Admin/students/student/lc/${studentID}`);
+    };
+
     const removeSubAttendance = (subId) => {
         dispatch(updateStudentFields(studentID, { subId }, "RemoveStudentSubAtten")).then(() => dispatch(getUserDetails(studentID, address)));
     };
@@ -225,6 +230,9 @@ const ViewStudent = () => {
                     </Container>
                 </TabContext>
             )}
+            <Primary3DButton onClick={handleIssueLC}>
+                    Issue Living Certificate
+                </Primary3DButton>
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </Box>
     );

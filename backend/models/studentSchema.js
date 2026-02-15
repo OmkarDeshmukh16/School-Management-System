@@ -9,6 +9,20 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    generalRegisterNo: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    penNumber: {
+        type: Number,
+        required: false
+    },
+    uid: {
+        type: String,
+        required: false,
+        unique: true
+    },
     password: {
         type: String,
         required: true
@@ -36,10 +50,14 @@ const studentSchema = new mongoose.Schema({
     dob: {
         type: Date, // Date of birth
     },
+    birthDateInWords: { type: String },
     nationality: {
         type: String,
     },
     motherTongue: {
+        type: String,
+    },
+    motherName: {
         type: String,
     },
     religion: {
@@ -92,10 +110,10 @@ const studentSchema = new mongoose.Schema({
         totalAmount: { type: Number, default: 0 },
         paidAmount: { type: Number, default: 0 },
         balanceAmount: { type: Number, default: 0 },
-        paymentStatus: { 
-            type: String, 
-            enum: ['Paid', 'Pending', 'Partial'], 
-            default: 'Pending' 
+        paymentStatus: {
+            type: String,
+            enum: ['Paid', 'Pending', 'Partial'],
+            default: 'Pending'
         },
         transactions: [{
             amount: Number,
@@ -103,7 +121,22 @@ const studentSchema = new mongoose.Schema({
             paymentMethod: String, // e.g., Cash, UPI, Online
             receiptNo: String
         }]
-    }
-});
+    },
+    // Birthplace Breakdown
+    village: { type: String },
+    taluka: { type: String },
+    district: { type: String },
+
+    // Institutional History
+    previousSchoolName: { type: String },
+    previousSchoolStandard: { type: String },
+    admissionDate: { type: String },
+    // Exit Details (Updated when LC is issued)
+    dateOfLeaving: { type: String },
+    reasonOfLeaving: { type: String },
+    progress: { type: String, default: "Good" },
+    conduct: { type: String, default: "Good" },
+    remarks: { type: String }
+}, { timestamps: true });
 
 module.exports = mongoose.model("student", studentSchema);

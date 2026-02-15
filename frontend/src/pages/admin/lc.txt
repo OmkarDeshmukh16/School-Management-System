@@ -1,0 +1,75 @@
+<GeneratorWrapper>
+        {/* --- OFFICIAL DOCUMENT PREVIEW --- */}
+        <DocumentPaper ref={certificateRef} elevation={0}>
+            <DocumentHeader>
+                {/* Dynamic School Logo */}
+                <LogoBox src={currentUser.schoolLogo || "/default-logo.png"} alt="Institutional Seal" />
+                <HeaderInfo>
+                    <SchoolName>{currentUser.schoolName || "NEXUS ACADEMY OF EXCELLENCE"}</SchoolName>
+                    <SchoolMeta>
+                        Affiliation No: 1234567 | School Code: 99.88.777
+                    </SchoolMeta>
+                    <SchoolAddress>Talegaon Dabhade, Pune, Maharashtra - 410506</SchoolAddress>
+                </HeaderInfo>
+            </DocumentHeader>
+
+            <TitleSection>
+                <Typography variant="h5" sx={{ fontFamily: 'Georgia', fontWeight: 'bold', textDecoration: 'underline' }}>
+                    SCHOOL LEAVING CERTIFICATE
+                </Typography>
+                <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
+                    (Original Document — Duplicate Copy Prohibited)
+                </Typography>
+            </TitleSection>
+
+            <DataGrid container spacing={2}>
+                {/* Primary Identifiers */}
+                <Grid item xs={6}><DataLabel>General Register No:</DataLabel> <DataValue>{studentData.generalRegisterNo}</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>UID (Aadhar) No:</DataLabel> <DataValue>{studentData.uid}</DataValue></Grid>
+                <Grid item xs={12}><DataLabel>PEN Number:</DataLabel> <DataValue>{studentData.penNumber}</DataValue></Grid>
+
+                {/* Personal Details */}
+                <Grid item xs={12}><DataLabel>Full Name of Student:</DataLabel> <DataValue>{studentData.name}</DataValue></Grid>
+                <Grid item xs={12}><DataLabel>Mother's Name:</DataLabel> <DataValue>{studentData.motherName}</DataValue></Grid>
+
+                <Grid item xs={6}><DataLabel>Nationality:</DataLabel> <DataValue>{studentData.nationality}</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>Mother Tongue:</DataLabel> <DataValue>{studentData.motherTongue}</DataValue></Grid>
+
+                <Grid item xs={4}><DataLabel>Religion:</DataLabel> <DataValue>{studentData.religion}</DataValue></Grid>
+                <Grid item xs={4}><DataLabel>Caste:</DataLabel> <DataValue>{studentData.caste}</DataValue></Grid>
+                <Grid item xs={4}><DataLabel>Sub-Caste:</DataLabel> <DataValue>{studentData.subCaste}</DataValue></Grid>
+
+                {/* Birth Details */}
+                <Grid item xs={12}>
+                    <DataLabel>Birthplace:</DataLabel>
+                    <DataValue>{studentData.birthPlace}</DataValue>
+                </Grid>
+                <Grid item xs={12}><DataLabel>Date of Birth:</DataLabel> <DataValue>{studentData.dob}</DataValue></Grid>
+                <Grid item xs={12}><DataValue sx={{ pl: 4, fontStyle: 'italic' }}>(In Words): {studentData.birthDateInWords}</DataValue></Grid>
+
+                {/* Academic History */}
+                <Grid item xs={12}><DataLabel>Previous School:</DataLabel> <DataValue>{studentData.previousSchoolName} (Std: {studentData.previousSchoolStandard})</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>Date of Admission:</DataLabel> <DataValue>{studentData.admissionDate}</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>Current Standard:</DataLabel> <DataValue>{studentData.currentStandard}</DataValue></Grid>
+
+                {/* Conduct & Exit Details */}
+                <Grid item xs={6}><DataLabel>Progress:</DataLabel> <DataValue>{studentData.progress}</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>Conduct:</DataLabel> <DataValue>{studentData.conduct}</DataValue></Grid>
+                <Grid item xs={12}><DataLabel>Reason for Leaving:</DataLabel> <DataValueText>{studentData.reasonOfLeaving}</DataValueText></Grid>
+                <Grid item xs={6}><DataLabel>Date of Leaving:</DataLabel> <DataValue>{studentData.dateOfLeaving}</DataValue></Grid>
+                <Grid item xs={6}><DataLabel>Academic Year:</DataLabel> <DataValue>{studentData.academicYear}</DataValue></Grid>
+
+                <Grid item xs={12} sx={{ mt: 2 }}><DataLabel>Remarks:</DataLabel> <DataValue>{studentData.remarks}</DataValue></Grid>
+            </DataGrid>
+
+            <SignatureSection>
+                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Class Teacher</SignBox>
+                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Clerk/Registrar</SignBox>
+                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Principal & Seal</SignBox>
+            </SignatureSection>
+        </DocumentPaper>
+
+        <Box sx={{ mt: 4, textAlign: 'right', '@media print': { display: 'none' } }}>
+            <Primary3DButton onClick={handlePrint}>Download Official LC</Primary3DButton>
+        </Box>
+    </GeneratorWrapper>

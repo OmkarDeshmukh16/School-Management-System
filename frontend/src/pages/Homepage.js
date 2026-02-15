@@ -43,7 +43,7 @@ const Homepage = () => {
                                     Initialize New Registry
                                 </SecondaryGhostButton>
                             </ActionGroup>
-                            
+
                         </ContentWrapper>
                     </EntryPanel>
                 </Grid>
@@ -88,6 +88,69 @@ const Homepage = () => {
                     </Grid>
                 </Container>
             </FeatureSection>
+
+            {/* --- PRICING TIER SECTION --- */}
+            <PricingSection id="pricing">
+                <Container maxWidth="lg">
+                    <SectionHeaderBox>
+                        <SectionTitle>Institutional Investment</SectionTitle>
+                        <TypographySubtitle>Select a plan tailored to your institution's scale</TypographySubtitle>
+                        <HorizontalDivider />
+                    </SectionHeaderBox>
+
+                    <Grid container spacing={4} justifyContent="center">
+                        {[
+                            {
+                                tier: "Foundation",
+                                price: "₹4,999",
+                                period: "per month",
+                                features: ["Up to 200 Scholars", "Attendance Registry", "Basic Notice Board", "Email Support"],
+                                buttonText: "Buy Now",
+                                highlight: false
+                            },
+                            {
+                                tier: "Professional",
+                                price: "₹9,999",
+                                period: "per month",
+                                features: ["Up to 1000 Scholars", "Financial Ledger", "Grievance Record", "Priority Support"],
+                                buttonText: "Buy Now",
+                                highlight: true
+                            },
+                            {
+                                tier: "Enterprise",
+                                price: "Custom",
+                                period: "Annual Billing",
+                                features: ["Unlimited Scholars", "AI Question Generator", "Custom Domain", "Dedicated Manager"],
+                                buttonText: "Buy Now",
+                                highlight: false
+                            }
+                        ].map((plan, index) => (
+                            <Grid item xs={12} md={4} key={index}>
+                                <PriceCard isHighlighted={plan.highlight}>
+                                    {plan.highlight && <Ribbon>Most Selected</Ribbon>}
+                                    <TierName>{plan.tier}</TierName>
+                                    <PriceDisplay>
+                                        <Currency>{plan.price}</Currency>
+                                        <Period> / {plan.period}</Period>
+                                    </PriceDisplay>
+                                    <FeatureList>
+                                        {plan.features.map((f, i) => (
+                                            <FeatureItem key={i}>— {f}</FeatureItem>
+                                        ))}
+                                    </FeatureList>
+                                    <PricingButton
+                                        variant={plan.highlight ? "contained" : "outlined"}
+                                        fullWidth
+                                        isHighlighted={plan.highlight}
+                                    >
+                                        {plan.buttonText}
+                                    </PricingButton>
+                                </PriceCard>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </PricingSection>
 
             {/* --- PROFESSIONAL FOOTER --- */}
             <FooterSection>
@@ -134,6 +197,7 @@ const HeroSection = styled(Grid)`
     display: flex;
     /* This ensures both children (md=6 items) take up the full height of the parent */
     align-items: stretch; 
+    overflow: hidden;
     border-bottom: 2px solid #1a1a1a;
 `;
 
@@ -378,3 +442,94 @@ const CardText = styled.p`
     line-height: 1.6;
 `;
 
+const PricingSection = styled.section`
+    padding: 200px 0;
+    background-color: #fdfcf8; /* Light paper color */
+    border-top: 1px solid #e0dcd0;
+`;
+
+const PriceCard = styled(Paper)`
+    && {
+        padding: 50px 30px;
+        border-radius: 0;
+        border: 1px solid ${props => props.isHighlighted ? '#1a1a1a' : '#e0dcd0'};
+        background-color: white;
+        box-shadow: ${props => props.isHighlighted ? '12px 12px 0px #7d6b5d' : '6px 6px 0px #e0dcd0'};
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        transition: all 0.3s ease;
+        &:hover {
+            transform: scale(1.02);
+        }
+    }
+`;
+
+const TierName = styled.h3`
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0 0 20px 0;
+`;
+
+const PriceDisplay = styled(Box)`
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+`;
+
+const Currency = styled.span`
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1a1a1a;
+`;
+
+const Period = styled.span`
+    font-family: serif;
+    font-style: italic;
+    color: #7d6b5d;
+`;
+
+const FeatureList = styled.div`
+    flex-grow: 1;
+    margin-bottom: 40px;
+`;
+
+const FeatureItem = styled.p`
+    font-family: serif;
+    font-size: 1rem;
+    color: #444;
+    margin: 10px 0;
+`;
+
+const PricingButton = styled(Button)`
+    && {
+        background-color: ${props => props.isHighlighted ? '#1a1a1a' : 'transparent'};
+        color: ${props => props.isHighlighted ? 'white' : '#1a1a1a'};
+        border: 1px solid #1a1a1a;
+        padding: 15px;
+        border-radius: 0;
+        font-family: 'Georgia', serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        &:hover {
+            background-color: #333;
+            color: white;
+        }
+    }
+`;
+
+const Ribbon = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #7d6b5d;
+    color: white;
+    padding: 5px 15px;
+    font-family: serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+`;

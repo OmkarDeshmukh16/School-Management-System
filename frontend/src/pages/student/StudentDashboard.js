@@ -17,7 +17,7 @@ import StudentProfile from './StudentProfile';
 import StudentSubjects from './StudentSubjects';
 import ViewStdAttendance from './ViewStdAttendance';
 import StudentComplain from './StudentComplain';
-import StudentFees from './StudentFees';
+// import StudentFees from './StudentFees';
 import Logout from '../Logout';
 import AccountMenu from '../../components/AccountMenu';
 import { AppBar, Drawer } from '../../components/styles';
@@ -75,7 +75,7 @@ const StudentDashboard = () => {
                         <Route path="/Student/profile" element={<StudentProfile />} />
                         <Route path="/Student/subjects" element={<StudentSubjects />} />
                         <Route path="/Student/attendance" element={<ViewStdAttendance />} />
-                        <Route path="/Student/fees" element={<StudentFees />} />
+                        {/* <Route path="/Student/fees" element={<StudentFees />} /> */}
                         <Route path="/Student/complain" element={<StudentComplain />} />
                         <Route path="/logout" element={<Logout />} />
                     </Routes>

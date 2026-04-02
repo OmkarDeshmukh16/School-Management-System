@@ -41,7 +41,7 @@ const StudentHomePage = () => {
         { name: 'Absent', value: overallAbsentPercentage }
     ];
 
-    const fees = student.fees || { totalAmount: 0, paidAmount: 0, balanceAmount: 0 };
+    // const fees = student.fees || { totalAmount: 0, paidAmount: 0, balanceAmount: 0 };
 
     const NotificationBell = ({ notices }) => {
         return (
@@ -78,7 +78,7 @@ const StudentHomePage = () => {
                     </Classic3DCard>
                 </Grid>
 
-                {/* Metric Card: Assignments */}
+                {/* Metric Card: Assignments
                 <Grid item xs={12} md={3}>
                     <Classic3DCard>
                         <IconBox>
@@ -88,6 +88,7 @@ const StudentHomePage = () => {
                         <MetricData start={0} end={fees.balanceAmount} duration={4} />
                     </Classic3DCard>
                 </Grid>
+                */}
 
                 {/* Metric Card: Attendance Chart */}
                 <Grid item xs={12} md={6}>

@@ -118,9 +118,9 @@ const Homepage = () => {
                             },
                             {
                                 tier: "Enterprise",
-                                price: "Custom",
+                                price: "coming soon",
                                 period: "Annual Billing",
-                                features: ["Unlimited Scholars", "AI Question Generator", "Custom Domain", "Dedicated Manager"],
+                                features: ["Unlimited Scholars", "AI Documents Generator", "Custom Domain", "Dedicated Manager"],
                                 buttonText: "Buy Now",
                                 highlight: false
                             }
@@ -157,7 +157,7 @@ const Homepage = () => {
                 <Container maxWidth="lg">
                     <Grid container spacing={8}>
                         <Grid item xs={12} md={4}>
-                            <FooterBrandText>SM </FooterBrandText>
+                            <FooterBrandText>SMART SCHOOL MGT </FooterBrandText>
                             <FooterDescription>
                                 Developed by Omkar Deshmukh.
                                 A high-performance MERN solutions for educational digital transformation in India.
@@ -176,7 +176,7 @@ const Homepage = () => {
                         </Grid>
                     </Grid>
                     <DividerLine />
-                    <CopyrightText>© 2026 Nexus School Management System. All Rights Reserved.</CopyrightText>
+                    <CopyrightText>© 2026 OmTech Solutions. All Rights Reserved.</CopyrightText>
                 </Container>
             </FooterSection>
         </FullPageWrapper>

@@ -4,6 +4,8 @@ import { Box, Paper, CircularProgress, Typography, Grid, TextField, Button } fro
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { createGlobalStyle } from 'styled-components';
+
 
 const LivingCertificate = () => {
     const { currentUser } = useSelector((state) => state.user);
@@ -106,103 +108,209 @@ const LivingCertificate = () => {
 
     // STEP 2: ACTUAL CERTIFICATE VIEW
     return (
+
         <GeneratorWrapper>
-        {/* --- OFFICIAL DOCUMENT PREVIEW --- */}
-        <DocumentPaper ref={certificateRef} elevation={0}>
-            <DocumentHeader>
-                {/* Dynamic School Logo */}
-                <LogoBox src={currentUser.schoolLogo || "/default-logo.png"} alt="Institutional Seal" />
-                <HeaderInfo>
-                    <SchoolName>{currentUser.schoolName || "NEXUS ACADEMY OF EXCELLENCE"}</SchoolName>
-                    <SchoolMeta>
-                        Affiliation No: 1234567 | School Code: 99.88.777
-                    </SchoolMeta>
-                    <SchoolAddress>Talegaon Dabhade, Pune, Maharashtra - 410506</SchoolAddress>
-                </HeaderInfo>
-            </DocumentHeader>
 
-            <TitleSection>
-                <Typography variant="h5" sx={{ fontFamily: 'Georgia', fontWeight: 'bold', textDecoration: 'underline' }}>
-                    SCHOOL LEAVING CERTIFICATE
-                </Typography>
+            <PrintConfig />
+            {/* --- OFFICIAL DOCUMENT PREVIEW --- */}
+            <DocumentPaper id="printable-certificate" ref={certificateRef} elevation={0}>
+                <DocumentHeader>
+                    {/* Pulls logo from Admin Profile */}
+                    <LogoBox
+                        src={currentUser.schoolLogo || "/default-logo.png"}
+                        alt="Institutional Seal"
+                    />
+                    <HeaderInfo>
+                        {/* Dynamic Institutional Data */}
+                        <SchoolName>{currentUser.schoolName || "INSTITUTION NAME"}</SchoolName>
+                        <Typography sx={{ fontSize: '1rem', fontWeight: 'bold', mt: 1 }}>
+                            UDISE: {currentUser.udiseNumber} | Board: {currentUser.board} | Medium: {currentUser.medium}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.9rem', fontStyle: 'italic' }}>
+                            {currentUser.address}
+                        </Typography>                    </HeaderInfo>
+                </DocumentHeader>
+
+                <TitleSection>
+                    <Typography variant="h5" sx={{ fontFamily: 'Georgia', fontWeight: 'bold', textDecoration: 'underline' }}>
+                        SCHOOL LEAVING CERTIFICATE
+                    </Typography>
+
+                </TitleSection>
+
+                <DataGrid container spacing={2}>
+                    {/* Primary Identifiers */}
+                    <Grid item xs={6}><DataLabel>General Register No:</DataLabel> <DataValue>{studentData.generalRegisterNo}</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>UID (Aadhar) No:</DataLabel> <DataValue>{studentData.uid}</DataValue></Grid>
+                    <Grid item xs={12}><DataLabel>PEN Number:</DataLabel> <DataValue>{studentData.penNumber}</DataValue></Grid>
+
+                    {/* Personal Details */}
+                    <Grid item xs={12}><DataLabel>Full Name of Student:</DataLabel> <DataValue>{studentData.name}</DataValue></Grid>
+                    <Grid item xs={12}><DataLabel>Mother's Name:</DataLabel> <DataValue>{studentData.motherName}</DataValue></Grid>
+
+                    <Grid item xs={6}><DataLabel>Nationality:</DataLabel> <DataValue>{studentData.nationality}</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>Mother Tongue:</DataLabel> <DataValue>{studentData.motherTongue}</DataValue></Grid>
+
+                    <Grid item xs={4}><DataLabel>Religion:</DataLabel> <DataValue>{studentData.religion}</DataValue></Grid>
+                    <Grid item xs={4}><DataLabel>Caste:</DataLabel> <DataValue>{studentData.caste}</DataValue></Grid>
+                    <Grid item xs={4}><DataLabel>Sub-Caste:</DataLabel> <DataValue>{studentData.subCaste}</DataValue></Grid>
+
+                    {/* Birth Details */}
+                    <Grid item xs={12}>
+                        <DataLabel>Birthplace:</DataLabel>
+                        <DataValue>
+                            {/* Combines individual fields for a full legal address */}
+                            {studentData.village}, {studentData.taluka}, {studentData.district}
+                        </DataValue>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <DataLabel>Date of Birth:</DataLabel>
+                        <DataValue>
+                            {/* Formats 2026-02-01T... into 01/02/2026 */}
+                            {studentData.dob ? new Date(studentData.dob).toLocaleDateString('en-IN') : "—"}
+                        </DataValue>
+                    </Grid>
+                    <Grid item xs={12}><DataValue sx={{ pl: 4, fontStyle: 'italic' }}>(In Words): {studentData.birthDateInWords}</DataValue></Grid>
+
+                    {/* Academic History */}
+                    <Grid item xs={12}><DataLabel>Previous School:</DataLabel> <DataValue>{studentData.previousSchoolName} (Std: {studentData.previousSchoolStandard})</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>Date of Admission:</DataLabel> <DataValue>{studentData.admissionDate}</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>Current Standard:</DataLabel> <DataValue>{studentData.sclassName?.sclassName}</DataValue></Grid>
+
+                    {/* Conduct & Exit Details */}
+                    <Grid item xs={6}><DataLabel>Progress:</DataLabel> <DataValue>{studentData.progress}</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>Conduct:</DataLabel> <DataValue>{studentData.conduct}</DataValue></Grid>
+                    <Grid item xs={12}><DataLabel>Reason for Leaving:</DataLabel> <DataValue>{studentData.reasonOfLeaving}</DataValue></Grid>
+                    <Grid item xs={6}><DataLabel>Date of Leaving:</DataLabel> <DataValue>{studentData.dateOfLeaving}</DataValue></Grid>
+                    <Grid item xs={12} sx={{ mt: 2 }}><DataLabel>Remarks:</DataLabel> <DataValue>{studentData.remarks}</DataValue></Grid>
+                </DataGrid>
+
+                <SignatureSection>
+                    <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Class Teaccher</SignBox>
+                    <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Clerk</SignBox>
+                    <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Principal & Seal</SignBox>
+                </SignatureSection>
                 <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                    (Original Document — Duplicate Copy Prohibited)
+                    (Note: No change in any certificate shall be made except by the authority issuing it and any infringement of this requirement is liable to involve the imposition of penalty such as rustication.)
                 </Typography>
-            </TitleSection>
+            </DocumentPaper>
 
-            <DataGrid container spacing={2}>
-                {/* Primary Identifiers */}
-                <Grid item xs={6}><DataLabel>General Register No:</DataLabel> <DataValue>{studentData.generalRegisterNo}</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>UID (Aadhar) No:</DataLabel> <DataValue>{studentData.uid}</DataValue></Grid>
-                <Grid item xs={12}><DataLabel>PEN Number:</DataLabel> <DataValue>{studentData.penNumber}</DataValue></Grid>
-
-                {/* Personal Details */}
-                <Grid item xs={12}><DataLabel>Full Name of Student:</DataLabel> <DataValue>{studentData.name}</DataValue></Grid>
-                <Grid item xs={12}><DataLabel>Mother's Name:</DataLabel> <DataValue>{studentData.motherName}</DataValue></Grid>
-
-                <Grid item xs={6}><DataLabel>Nationality:</DataLabel> <DataValue>{studentData.nationality}</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>Mother Tongue:</DataLabel> <DataValue>{studentData.motherTongue}</DataValue></Grid>
-
-                <Grid item xs={4}><DataLabel>Religion:</DataLabel> <DataValue>{studentData.religion}</DataValue></Grid>
-                <Grid item xs={4}><DataLabel>Caste:</DataLabel> <DataValue>{studentData.caste}</DataValue></Grid>
-                <Grid item xs={4}><DataLabel>Sub-Caste:</DataLabel> <DataValue>{studentData.subCaste}</DataValue></Grid>
-
-                {/* Birth Details */}
-                <Grid item xs={12}>
-                    <DataLabel>Birthplace:</DataLabel>
-                    <DataValue>{studentData.birthPlace}</DataValue>
-                </Grid>
-                <Grid item xs={12}><DataLabel>Date of Birth:</DataLabel> <DataValue>{studentData.dob}</DataValue></Grid>
-                <Grid item xs={12}><DataValue sx={{ pl: 4, fontStyle: 'italic' }}>(In Words): {studentData.birthDateInWords}</DataValue></Grid>
-
-                {/* Academic History */}
-                <Grid item xs={12}><DataLabel>Previous School:</DataLabel> <DataValue>{studentData.previousSchoolName} (Std: {studentData.previousSchoolStandard})</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>Date of Admission:</DataLabel> <DataValue>{studentData.admissionDate}</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>Current Standard:</DataLabel> <DataValue>{studentData.sclassName?.sclassName}</DataValue></Grid>
-
-                {/* Conduct & Exit Details */}
-                <Grid item xs={6}><DataLabel>Progress:</DataLabel> <DataValue>{studentData.progress}</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>Conduct:</DataLabel> <DataValue>{studentData.conduct}</DataValue></Grid>
-                <Grid item xs={12}><DataLabel>Reason for Leaving:</DataLabel> <DataValue>{studentData.reasonOfLeaving}</DataValue></Grid>
-                <Grid item xs={6}><DataLabel>Date of Leaving:</DataLabel> <DataValue>{studentData.dateOfLeaving}</DataValue></Grid>
-                <Grid item xs={12} sx={{ mt: 2 }}><DataLabel>Remarks:</DataLabel> <DataValue>{studentData.remarks}</DataValue></Grid>
-            </DataGrid>
-
-            <SignatureSection>
-                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Class Teaccher</SignBox>
-                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Clerk</SignBox>
-                <SignBox><Box sx={{ borderTop: '1px solid #000', width: '140px' }} />Principal & Seal</SignBox>
-            </SignatureSection>
-        </DocumentPaper>
-
-        <Box sx={{ mt: 4, textAlign: 'right', '@media print': { display: 'none' } }}>
-            <Primary3DButton onClick={handlePrint}>Download Official LC</Primary3DButton>
-        </Box>
-    </GeneratorWrapper>
+            <Box sx={{ mt: 4, textAlign: 'right', '@media print': { display: 'none' } }}>
+                <Primary3DButton onClick={handlePrint}>Download Official LC</Primary3DButton>
+            </Box>
+        </GeneratorWrapper>
     );
 };
 
+/* const CertificateTable = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'Times New Roman', serif;
+    
+    td {
+        border: 1px solid #000;
+        padding: 10px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+`; */
+
+const PrintConfig = createGlobalStyle`
+  @media print {
+    /* 1. Hide the Sidebar, Dashboard Header, and system text */
+    nav, 
+    aside, 
+    header, 
+    .no-print,
+    .MuiDrawer-root, 
+    .MuiAppBar-root,
+    button {
+      display: none !important;
+    }
+
+    /* 2. Reset margins and backgrounds for a clean white sheet */
+    body {
+      background-color: white !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* 3. Ensure the certificate container takes full width and height */
+    main, .MuiBox-root {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+  }
+`;
+
 const DocumentPaper = styled(Paper)`
     && {
-        padding: 80px;
-        border: 2px solid #1a1a1a;
-        background-color: #fff;
-        font-family: 'Georgia', serif;
-        position: relative;
-        max-width: 900px;
+        width: 210mm;
+        height: 297mm;
+        padding: 15mm;
+        background-color: white;
+        border: 2px solid #000 !important;
+        box-shadow: 0 0 0 2px #000;
+        box-sizing: border-box;
         margin: auto;
-        /* Watermark Effect */
-        &::before {
-            content: "OFFICIAL RECORD";
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 5rem;
-            color: rgba(0,0,0,0.03);
-            z-index: 0;
-            pointer-events: none;
+        position: relative;
+        overflow: hidden;
+
+        @media print {
+            border: 2px solid #000 !important;
+
+            width: 100%;
+            height: 100%;
+            margin-top: 1mm !important;
+            margin-left: auto;
+            margin-right: auto;
+
+            /* High-accuracy print rendering */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
     }
+`;
+
+const DocumentHeader = styled.div`
+    position: relative; /* Essential for absolute logo positioning */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the child HeaderInfo */
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 3px double #000;
+    min-height: 120px; /* Ensures space for the logo */
+`;
+
+const LogoBox = styled.img`
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+`;
+
+const HeaderInfo = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const SchoolName = styled.h3`
+    font-family: 'Georgia', serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    width: 80%; /* Limits width so it doesn't overlap logo if very long */
+    font-weight: bold;
 `;
 
 const DataLabel = styled.span`
@@ -219,25 +327,15 @@ const DataValue = styled.span`
     padding-bottom: 2px;
 `;
 
-const DocumentHeader = styled(Box)`
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 40px;
-    border-bottom: 4px double #1a1a1a;
-    padding-bottom: 20px;
-`;
-
-const SchoolName = styled.h1`
-    font-size: 1.8rem;
-    margin: 0;
-    letter-spacing: 2px;
-`;
-
 const SignatureSection = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-top: 80px;
+    margin-top: 60px;
+    .sign-line {
+        border-top: 1px solid #000;
+        width: 150px;
+        margin-bottom: 5px;
+    }
 `;
 
 const SignBox = styled.div`
@@ -247,52 +345,48 @@ const SignBox = styled.div`
 `;
 
 const GeneratorWrapper = styled.div`
-    padding: 24px;
-    background-color: #f9f7f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 20px;
     min-height: 100vh;
 
     @media print {
         padding: 0;
         background-color: white;
-        /* Force the certificate to hide everything else in the DOM */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 9999;
     }
 `;
 
-/* const GlobalPrintStyle = createGlobalStyle`
+const GlobalPrintStyle = createGlobalStyle`
   @media print {
-    .no-print, 
-    nav, 
-    header, 
-    aside, 
-    button,
-    .MuiDrawer-root, 
-    .MuiAppBar-root {
-      display: none !important;
+    /* 1. Hide everything except the certificate */
+    body * {
+        visibility: hidden;
+    }
+    #printable-certificate, #printable-certificate * {
+        visibility: visible;
     }
     
-    main, .MuiBox-root {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
+    /* 2. Position the certificate at the absolute top-left */
+    #printable-certificate {
+        position: absolute;
+        left: 0;
+        top: 0;
+        visibility: visible;
+    }
+
+    /* 3. Hide browser headers/footers (URL, Date) */
+    @page {
+        size: auto;
+        margin: 0; /* Small margin to prevent printer clipping */
+    }
+
+    /* 4. Force hide the sidebar and top-nav specifically */
+    nav, aside, header, .no-print, [class*="MuiDrawer"], [class*="MuiAppBar"] {
+        display: none !important;
     }
   }
-`; */
-
-const LogoBox = styled.img`
-    width: 84px;
-    height: 84px;
-    object-fit: contain;
-`;
-
-const HeaderInfo = styled.div`
-    display: flex;
-    flex-direction: column;
 `;
 
 const SchoolMeta = styled.span`

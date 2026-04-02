@@ -83,3 +83,18 @@ export const getStudentsByClass = (id) => async (dispatch) => {
         dispatch(getError(error));
     }
 };
+
+export const getStudentDetail = (id) => async (dispatch) => {
+    dispatch(getRequest());
+
+    try {
+        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Student/${id}`);
+        if (result.data) {
+            dispatch(getSuccess(result.data));
+        } else {
+            dispatch(getFailed("No student found"));
+        }
+    } catch (error) {
+        dispatch(getError(error.message));
+    }
+};

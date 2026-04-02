@@ -72,9 +72,9 @@ const ViewStudent = () => {
         attendancePercentage: calculateSubjectAttendancePercentage(present, sessions),
     }));
     const chartMarksData = userDetails.examResult?.map(result => ({
-    subName: result.subName?.subName || "Unknown",
-    marksObtained: result.marksObtained
-})) || [];
+        subName: result.subName?.subName || "Unknown",
+        marksObtained: result.marksObtained
+    })) || [];
     // --- SECTIONS ---
 
     const StudentDetailsSection = () => (
@@ -231,8 +231,15 @@ const ViewStudent = () => {
                 </TabContext>
             )}
             <Primary3DButton onClick={handleIssueLC}>
-                    Issue Living Certificate
-                </Primary3DButton>
+                Issue Living Certificate
+            </Primary3DButton>
+            <Primary3DButton
+                variant="contained"
+                sx={{ backgroundColor: '#4caf50', '&:hover': { backgroundColor: '#388e3c' } }}
+                onClick={() => navigate(`/Admin/students/student/bonafide/${params.id}`)}
+            >
+                Generate Bonafide
+            </Primary3DButton>
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
         </Box>
     );

@@ -66,5 +66,40 @@ const getAdminDetail = async (req, res) => {
     }
 }
 
+// Ensure these fields are allowed in your update function
+const updateAdmin = async (req, res) => {
+    try {
+        // Explicitly list all fields to be updated
+        const { 
+            name, email, password, schoolName, 
+            udiseNumber, recognitionNumber, board, 
+            medium, address, mobile, schoolLogo, bankDetails
+        } = req.body;
 
-module.exports = { adminRegister, adminLogIn, getAdminDetail};
+        const updateData = { 
+            name, email, schoolName, 
+            udiseNumber, recognitionNumber, board, 
+            medium, address, mobile, schoolLogo, bankDetails 
+        };
+
+        // Hash password only if it's being changed
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            updateData.password = await bcrypt.hash(password, salt);
+        }
+
+        const result = await Admin.findByIdAndUpdate(
+            req.params.id,
+            { $set: updateData },
+            { new: true }
+        );
+
+        // Hide password in response
+        result.password = undefined;
+        res.send(result);
+    } catch (err) {
+        res.status(500).json({ message: "Update failed", error: err });
+    }
+};
+
+module.exports = { adminRegister, adminLogIn, getAdminDetail, updateAdmin};

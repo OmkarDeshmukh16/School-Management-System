@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 // const { adminRegister, adminLogIn, deleteAdmin, getAdminDetail, updateAdmin } = require('../controllers/admin-controller.js');
 
-const { adminRegister, adminLogIn, getAdminDetail} = require('../controllers/admin-controller.js');
+const { adminRegister, adminLogIn, getAdminDetail, updateAdmin} = require('../controllers/admin-controller.js');
 
 const { sclassCreate, sclassList, deleteSclass, deleteSclasses, getSclassDetail, getSclassStudents } = require('../controllers/class-controller.js');
 const { complainCreate, complainList, deleteComplain } = require('../controllers/complain-controller.js');
@@ -32,8 +32,8 @@ const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeac
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); 
 const { bulkStudentRegistration } = require('../controllers/student_controller.js');
-const { createOrder, verifyPayment } = require('../controllers/payment-controller');
-const { FeeNotice } = require('../controllers/notice-controller.js')
+// const { createOrder, verifyPayment } = require('../controllers/payment-controller');
+// const { FeeNotice } = require('../controllers/notice-controller.js')
 
 // Admin
 router.post('/AdminReg', adminRegister);
@@ -42,7 +42,7 @@ router.post('/AdminLogin', adminLogIn);
 router.get("/Admin/:id", getAdminDetail)
 // router.delete("/Admin/:id", deleteAdmin)
 
-// router.put("/Admin/:id", updateAdmin)
+router.put("/Admin/:id", updateAdmin)
 
 // Student
 
@@ -131,18 +131,12 @@ router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 // Bulk Student Registration
 router.post('/BulkStudentReg', upload.single('excelFile'), bulkStudentRegistration);
 
-// --- FINANCIAL LEDGER & FEE MANAGEMENT ---
-// Admin: Record a manual cash/cheque payment
-router.put('/CollectFees/:id', collectFees);
+// --- FINANCIAL LEDGER & FEE MANAGEMENT (disabled) ---
+// router.put('/CollectFees/:id', collectFees);
+// router.post('/FeeNotice', FeeNotice);
 
-// Admin: Dispatch a financial demand notice
-router.post('/FeeNotice', FeeNotice);
-
-// --- ONLINE PAYMENT GATEWAY (RAZORPAY) ---
-// Student: Create a secure Razorpay Order
-router.post('/createOrder', createOrder);
-
-// Student: Verify signature and update ledger after payment
-router.post('/verifyPayment', verifyPayment);
-router.post('/SetClassFees', setClassFees);
+// --- ONLINE PAYMENT GATEWAY (RAZORPAY) (disabled) ---
+// router.post('/createOrder', createOrder);
+// router.post('/verifyPayment', verifyPayment);
+// router.post('/SetClassFees', setClassFees);
 module.exports = router;

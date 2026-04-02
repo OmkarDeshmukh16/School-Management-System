@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     studentsList: [],
+    studentDetails: [],
     loading: false,
     error: null,
     response: null,
@@ -23,6 +24,7 @@ const studentSlice = createSlice({
         },
         getSuccess: (state, action) => {
             state.studentsList = action.payload;
+            state.studentDetails = action.payload;
             state.loading = false;
             state.error = null;
             state.response = null;

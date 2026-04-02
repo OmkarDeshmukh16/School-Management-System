@@ -8,7 +8,7 @@ import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import LoginPage from './pages/LoginPage';
 import AdminRegisterPage from './pages/admin/AdminRegisterPage';
 import ChooseUser from './pages/ChooseUser';
-import LivingCertificate from './pages/admin/LivingCertificate';
+import BonafideCertificate from './pages/admin/BonafideCertificate';
 const App = () => {
   const { currentRole } = useSelector(state => state.user);
 

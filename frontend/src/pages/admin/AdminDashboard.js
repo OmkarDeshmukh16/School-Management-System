@@ -41,9 +41,10 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
-import ShowFees from './studentRelated/ShowFees';
-import FeeLedger from './studentRelated/FeeLedger';
+// import ShowFees from './studentRelated/ShowFees';
+// import FeeLedger from './studentRelated/FeeLedger';
 import LivingCertificate from './LivingCertificate';
+import BonafideCertificate from './BonafideCertificate';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
@@ -95,6 +96,7 @@ const AdminDashboard = () => {
                         <Route path="/Admin/profile" element={<AdminProfile />} />
                         <Route path="/Admin/complains" element={<SeeComplains />} />
                         <Route path="/Admin/students/student/lc/:id" element={<LivingCertificate />} />
+                        <Route path="/Admin/students/student/bonafide/:id" element={<BonafideCertificate />} />
 
                         {/* Notice Routes */}
                         <Route path="/Admin/addnotice" element={<AddNotice />} />
@@ -123,9 +125,10 @@ const AdminDashboard = () => {
                         <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance situation="Student" />} />
                         <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks situation="Student" />} />
 
-                        {/* --- Fee Routes --- */}
+                        {/* --- Fee Routes (disabled) ---
                         <Route path="/Admin/fees" element={currentUser ? <ShowFees /> : <Navigate to="/Adminlogin" />} />
                         <Route path="/Admin/students/student/fees/:id" element={<FeeLedger />} />
+                        */}
 
                         {/* Teacher Routes */}
                         <Route path="/Admin/teachers" element={<ShowTeachers />} />

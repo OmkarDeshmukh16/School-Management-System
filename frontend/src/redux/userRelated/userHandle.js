@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 import {
     authRequest,
     stuffAdded,
@@ -13,12 +14,12 @@ import {
     getError,
 } from './userSlice';
 
+
 export const loginUser = (fields, role) => async (dispatch) => {
     dispatch(authRequest());
 
     try {
-        const baseURL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000'; // Fallback to 5000
-        const result = await axios.post(`${baseURL}/${role}Login`, fields, {
+        const result = await axios.post(`${BASEURL}/${role}Login`, fields, {
             headers: { 'Content-Type': 'application/json' },
         });
 
@@ -29,7 +30,6 @@ export const loginUser = (fields, role) => async (dispatch) => {
         }
     } catch (error) {
         if (!error.response) {
-            // This happens when the server port is wrong or the server is down
             dispatch(authError("The server is currently unreachable. Please verify the connection."));
         } else {
             dispatch(authError(error.response.data.message || "Authentication failed."));
@@ -41,11 +41,10 @@ export const registerUser = (fields, role) => async (dispatch) => {
     dispatch(authRequest());
 
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/${role}Reg`, fields, {
+        const result = await axios.post(`${BASEURL}/${role}Reg`, fields, {
             headers: { 'Content-Type': 'application/json' },
         });
 
-        // Add 'role' or 'name' check to confirm student registration success
         if (result.data.schoolName || result.data.role === "Student" || result.data.name) {
             dispatch(doneSuccess(result.data));
         }
@@ -53,7 +52,6 @@ export const registerUser = (fields, role) => async (dispatch) => {
             dispatch(stuffAdded());
         }
         else {
-            // This is where "Student not found" is likely being pulled from result.data.message
             dispatch(authFailed(result.data.message || "Registration failed"));
         }
     } catch (error) {
@@ -69,7 +67,7 @@ export const getUserDetails = (id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+        const result = await axios.get(`${BASEURL}/${address}/${id}`);
         if (result.data) {
             dispatch(doneSuccess(result.data));
         }
@@ -82,7 +80,7 @@ export const getUserDetails = (id, address) => async (dispatch) => {
 //     dispatch(getRequest());
 
 //     try {
-//         const result = await axios.delete(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+//         const result = await axios.delete(`${BASEURL}/${address}/${id}`);
 //         if (result.data.message) {
 //             dispatch(getFailed(result.data.message));
 //         } else {
@@ -103,7 +101,7 @@ export const updateUser = (fields, id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`, fields, {
+        const result = await axios.put(`${BASEURL}/${address}/${id}`, fields, {
             headers: { 'Content-Type': 'application/json' },
         });
         if (result.data.schoolName) {
@@ -121,7 +119,7 @@ export const addStuff = (fields, address) => async (dispatch) => {
     dispatch(authRequest());
 
     try {
-        const result = await axios.post(`${process.env.REACT_APP_BASE_URL}/${address}Create`, fields, {
+        const result = await axios.post(`${BASEURL}/${address}Create`, fields, {
             headers: { 'Content-Type': 'application/json' },
         });
 

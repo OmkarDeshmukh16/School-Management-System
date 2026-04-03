@@ -6,6 +6,7 @@ import { getAllStudents } from '../../../redux/studentRelated/studentHandle';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { BASEURL } from '../../../utils/apiConfig';
 import { useState } from 'react';
 
 const ShowFees = () => {
@@ -35,7 +36,7 @@ const ShowFees = () => {
         }
 
         try {
-            const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/SetClassFees`, {
+            const res = await axios.post(`${BASEURL}/SetClassFees`, {
                 sclassName: selectedSclass,
                 totalAmount: classFee,
                 school: currentUser._id

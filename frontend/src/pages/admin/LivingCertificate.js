@@ -4,6 +4,7 @@ import { Box, Paper, CircularProgress, Typography, Grid, TextField, Button } fro
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 import { createGlobalStyle } from 'styled-components';
 
 
@@ -24,7 +25,7 @@ const LivingCertificate = () => {
     useEffect(() => {
         const fetchStudentDetails = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/Student/${id}`);
+                const response = await axios.get(`${BASEURL}/Student/${id}`);
                 setStudentData(response.data);
                 // If data already exists in DB, skip the entry form
                 if (response.data.reasonOfLeaving) setIsFinalized(true);
@@ -40,7 +41,7 @@ const LivingCertificate = () => {
     const handleFinalize = async () => {
         setLoading(true);
         try {
-            await axios.put(`${process.env.REACT_APP_BASE_URL}/Student/${id}`, {
+            await axios.put(`${BASEURL}/Student/${id}`, {
                 ...exitDetails,
                 role: 'Student'
             });

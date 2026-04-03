@@ -5,6 +5,7 @@ import { addStuff } from '../../redux/userRelated/userHandle';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 
 const StudentComplain = () => {
     const [complaint, setComplaint] = useState("");
@@ -23,7 +24,7 @@ const StudentComplain = () => {
 
     const submitGrievance = async () => {
     try {
-        await axios.post(`${process.env.REACT_APP_BASE_URL}/ComplainCreate`, {
+        await axios.post(`${BASEURL}/ComplainCreate`, {
             user: currentUser._id,
             complaint: complaint,
             school: currentUser.school._id,

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 import {
     getRequest,
     getSuccess,
@@ -12,7 +13,7 @@ export const getAllStudents = (id) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Students/${id}`);
+        const result = await axios.get(`${BASEURL}/Students/${id}`);
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {
@@ -27,7 +28,7 @@ export const updateStudentFields = (id, fields, address) => async (dispatch) => 
     dispatch(getRequest());
 
     try {
-        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`, fields, {
+        const result = await axios.put(`${BASEURL}/${address}/${id}`, fields, {
             headers: { 'Content-Type': 'application/json' },
         });
         if (result.data.message) {
@@ -44,7 +45,7 @@ export const removeStuff = (id, address) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.put(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+        const result = await axios.put(`${BASEURL}/${address}/${id}`);
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {
@@ -58,7 +59,7 @@ export const removeStuff = (id, address) => async (dispatch) => {
 export const deleteUser = (id, address) => async (dispatch) => {
     dispatch(getRequest());
     try {
-        const result = await axios.delete(`${process.env.REACT_APP_BASE_URL}/${address}/${id}`);
+        const result = await axios.delete(`${BASEURL}/${address}/${id}`);
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {
@@ -73,7 +74,7 @@ export const getStudentsByClass = (id) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/SclassStudents/${id}`);
+        const result = await axios.get(`${BASEURL}/SclassStudents/${id}`);
         if (result.data.message) {
             dispatch(getFailed(result.data.message));
         } else {
@@ -88,7 +89,7 @@ export const getStudentDetail = (id) => async (dispatch) => {
     dispatch(getRequest());
 
     try {
-        const result = await axios.get(`${process.env.REACT_APP_BASE_URL}/Student/${id}`);
+        const result = await axios.get(`${BASEURL}/Student/${id}`);
         if (result.data) {
             dispatch(getSuccess(result.data));
         } else {

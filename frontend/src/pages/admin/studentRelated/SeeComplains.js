@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { getAllComplains } from '../../../redux/complainRelated/complainHandle';
 import TableTemplate from '../../../components/TableTemplate';
 import axios from 'axios';
+import { BASEURL } from '../../../utils/apiConfig';
 
 const SeeComplains = () => {
     const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const SeeComplains = () => {
 
     const handleResolve = async (id) => {
         try {
-            const res = await axios.delete(`${process.env.REACT_APP_BASE_URL}/Complain/${id}`);
+            const res = await axios.delete(`${BASEURL}/Complain/${id}`);
             if (res.status === 200) {
                 // Re-fetch list to update UI after deletion
                 dispatch(getAllComplains(currentUser._id, "Complain"));

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { getUserDetails } from '../../redux/userRelated/userHandle';
 import StudentTransactionHistory from './StudentTransactionHistory';
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 
 const StudentFees = () => {
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const StudentFees = () => {
     try {
         // 1. Create an Order on your Node.js backend
         // We send the amount the student needs to pay
-        const { data: order } = await axios.post(`${process.env.REACT_APP_BASE_URL}/createOrder`, {
+        const { data: order } = await axios.post(`${BASEURL}/createOrder`, {
             amount: student.fees.balanceAmount 
         });
 
@@ -49,7 +50,7 @@ const StudentFees = () => {
                         amount: student.fees.balanceAmount
                     };
 
-                    const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/verifyPayment`, verifyData);
+                    const res = await axios.post(`${BASEURL}/verifyPayment`, verifyData);
                     
                     if (res.status === 200) {
                         alert("Transaction Verified. Ledger Updated Successfully.");

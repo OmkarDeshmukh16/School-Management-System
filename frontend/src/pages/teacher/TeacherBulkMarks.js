@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import { getStudentsByClass } from '../../redux/studentRelated/studentHandle';
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 import styled from 'styled-components';
 
 const TeacherBulkMarks = () => {
@@ -35,7 +36,7 @@ const TeacherBulkMarks = () => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_BASE_URL}/UpdateBulkMarks`, {
+            const res = await axios.put(`${BASEURL}/UpdateBulkMarks`, {
                 marksData: Object.entries(marksData).map(([studentID, marksObtained]) => ({
                     studentID,
                     marksObtained,

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Container, Paper, Typography, FormControl, Select, MenuItem, InputLabel, CircularProgress } from '@mui/material';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import axios from 'axios';
+import { BASEURL } from '../../../utils/apiConfig';
 import styled from 'styled-components';
 import TableTemplate from '../../../components/TableTemplate';
 
@@ -24,7 +25,7 @@ const StudentFilter = () => {
         setSelectedClass(classId);
         setLoading(true);
         try {
-            const res = await axios.get(`${process.env.REACT_APP_BASE_URL}/Sclass/Students/${classId}`);
+            const res = await axios.get(`${BASEURL}/Sclass/Students/${classId}`);
             setStudents(res.data);
         } catch (err) {
             setStudents([]);

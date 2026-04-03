@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Paper, CircularProgress, Container, Stack, Select, MenuItem, FormControl } from '@mui/material';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { BASEURL } from '../../../utils/apiConfig';
 import styled from 'styled-components';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { downloadScholarTemplate } from '../../../utils/excelTemplate';
@@ -35,7 +36,7 @@ const BulkEnrollment = () => {
 
         setLoader(true);
         try {
-            const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/BulkStudentReg`, formData);
+            const res = await axios.post(`${BASEURL}/BulkStudentReg`, formData);
             setMessage(res.data.message);
         } catch (err) {
             setMessage("Registry update failed. Check console for details.");

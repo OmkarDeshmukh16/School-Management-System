@@ -5,6 +5,7 @@ import { Box, Typography, Paper, TextField, Button, Grid, Divider, CircularProgr
 import styled from 'styled-components';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import axios from 'axios';
+import { BASEURL } from '../../../utils/apiConfig';
 import { getUserDetails } from '../../../redux/userRelated/userHandle'; // Ensure this path is correct
 
 const FeeLedger = ({ currentUser }) => {
@@ -49,7 +50,7 @@ const FeeLedger = ({ currentUser }) => {
         };
 
         try {
-            await axios.post(`${process.env.REACT_APP_BASE_URL}/FeeNotice`, noticeFields);
+            await axios.post(`${BASEURL}/FeeNotice`, noticeFields);
             alert("Institutional Demand Notice has been dispatched to the scholar.");
         } catch (err) {
             console.error("Failed to send notice", err);
@@ -63,7 +64,7 @@ const FeeLedger = ({ currentUser }) => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_BASE_URL}/CollectFees/${student._id}`, {
+            const res = await axios.put(`${BASEURL}/CollectFees/${student._id}`, {
                 amount: payment.amount,
                 paymentMethod: payment.method,
             });

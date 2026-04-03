@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, TextField } from '@mui/material';
 import { getStudentsByClass } from '../../redux/studentRelated/studentHandle';
 import axios from 'axios';
+import { BASEURL } from '../../utils/apiConfig';
 import styled from 'styled-components';
 
 const TeacherBulkAttendance = () => {
@@ -37,7 +38,7 @@ const TeacherBulkAttendance = () => {
         }));
 
         try {
-            await axios.put(`${process.env.REACT_APP_BASE_URL}/UpdateBulkAttendance`, {
+            await axios.put(`${BASEURL}/UpdateBulkAttendance`, {
                 attendanceData: formattedData,
                 date: selectedDate,
                 subId: currentUser.teachSubject._id

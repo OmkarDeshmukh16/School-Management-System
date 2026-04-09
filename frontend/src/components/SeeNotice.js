@@ -17,7 +17,7 @@ const SeeNotice = () => {
         else {
             dispatch(getAllNotices(currentUser.school._id, "Notice"));
         }
-    }, [dispatch]);
+    }, [dispatch, currentRole, currentUser]);
 
     if (error) {
         console.log(error);

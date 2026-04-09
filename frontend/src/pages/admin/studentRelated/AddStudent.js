@@ -11,7 +11,7 @@ const AddStudent = () => {
     const navigate = useNavigate();
     const params = useParams();
 
-    const { status, response, error } = useSelector(state => state.user);
+    const { status, response } = useSelector(state => state.user);
     const { sclassesList } = useSelector(state => state.sclass);
     const { currentUser } = useSelector(state => state.user);
 

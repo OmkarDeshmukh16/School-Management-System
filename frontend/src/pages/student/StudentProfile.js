@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import { Typography, Grid, Box, Avatar, Container, Paper, Divider } from '@mui/material';
+import { Typography, Grid, Box, Container, Paper, Divider } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { 
     Badge, School, Email, Phone, Home, Cake, Person, 
@@ -147,18 +147,7 @@ const SectionHeading = styled(Typography)`
     }
 `;
 
-const SquareAvatar = styled(Avatar)`
-    && {
-        width: 180px;
-        height: 200px;
-        border-radius: 0;
-        border: 1px solid #1a1a1a;
-        background-color: #fdfcf8;
-        color: #1a1a1a;
-        font-family: 'Georgia', serif;
-        font-size: 5rem;
-    }
-`;
+
 
 const Label = styled.p`
     font-family: serif;

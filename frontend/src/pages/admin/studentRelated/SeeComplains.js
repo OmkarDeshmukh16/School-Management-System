@@ -9,7 +9,7 @@ import { BASEURL } from '../../../utils/apiConfig';
 
 const SeeComplains = () => {
     const dispatch = useDispatch();
-    const { complainsList, loading, error, response } = useSelector((state) => state.complain);
+    const { complainsList, loading, response } = useSelector((state) => state.complain);
     const { currentUser } = useSelector(state => state.user);
 
     useEffect(() => {

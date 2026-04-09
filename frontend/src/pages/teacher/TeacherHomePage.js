@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Students from "../../assets/img1.png";
 import Lessons from "../../assets/subjects.svg";
 import Tests from "../../assets/assignment.svg";
-import Time from "../../assets/time.svg";
+
 import { getClassStudents, getSubjectDetails } from '../../redux/sclassRelated/sclassHandle';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';

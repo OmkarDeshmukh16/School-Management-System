@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Container, Paper, Typography, FormControl, Select, MenuItem, InputLabel, CircularProgress } from '@mui/material';
+import { Box, Container, Paper, Typography, FormControl, Select, MenuItem, CircularProgress } from '@mui/material';
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import axios from 'axios';
 import { BASEURL } from '../../../utils/apiConfig';
@@ -9,7 +9,7 @@ import TableTemplate from '../../../components/TableTemplate';
 
 const StudentFilter = () => {
     const dispatch = useDispatch();
-    const { sclassesList, loading: classLoading } = useSelector((state) => state.sclass);
+    const { sclassesList } = useSelector((state) => state.sclass);
     const { currentUser } = useSelector((state) => state.user);
 
     const [selectedClass, setSelectedClass] = useState("");

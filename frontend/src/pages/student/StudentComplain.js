@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Stack, TextField, Typography, Paper } from '@mui/material';
 import Popup from '../../components/Popup';
-import { addStuff } from '../../redux/userRelated/userHandle';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import { BASEURL } from '../../utils/apiConfig';
@@ -13,14 +12,10 @@ const StudentComplain = () => {
 
     const { status, currentUser, error } = useSelector(state => state.user);
 
-    const user = currentUser._id
-    const school = currentUser.school._id
 
-    const [loader, setLoader] = useState(false)
+
     const [message, setMessage] = useState("");
     const [showPopup, setShowPopup] = useState(false);
-
-    const fields = { user, date, complaint, school };
 
     const submitGrievance = async () => {
     try {
@@ -40,14 +35,12 @@ const StudentComplain = () => {
 
     useEffect(() => {
         if (status === "added") {
-            setLoader(false)
             setShowPopup(true)
             setMessage("Grievance recorded successfully in the institutional archive.")
             setComplaint("");
             setDate("");
         }
         else if (error) {
-            setLoader(false)
             setShowPopup(true)
             setMessage("Network Error: Connectivity to the registry failed.")
         }

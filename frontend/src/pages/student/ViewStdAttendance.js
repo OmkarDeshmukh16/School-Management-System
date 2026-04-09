@@ -24,7 +24,7 @@ const ViewStdAttendance = () => {
         }));
     };
 
-    const { userDetails, currentUser, loading, response, error } = useSelector((state) => state.user);
+    const { userDetails, currentUser, loading } = useSelector((state) => state.user);
 
     useEffect(() => {
         dispatch(getUserDetails(currentUser._id, "Student"));

@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { BASEURL } from '../../../utils/apiConfig';
 import styled from 'styled-components';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
 import { downloadScholarTemplate } from '../../../utils/excelTemplate';
 
 const BulkEnrollment = () => {
     const [file, setFile] = useState(null);
     const [loader, setLoader] = useState(false);
-    const [message, setMessage] = useState("");
+
     // Ensure 'sclass' matches the name of the reducer in your store.js
     const { sclassesList, loading: classLoading } = useSelector((state) => state.sclass);
     // Get institutional data from Redux
@@ -37,9 +37,9 @@ const BulkEnrollment = () => {
         setLoader(true);
         try {
             const res = await axios.post(`${BASEURL}/BulkStudentReg`, formData);
-            setMessage(res.data.message);
+            alert(res.data.message);
         } catch (err) {
-            setMessage("Registry update failed. Check console for details.");
+            alert("Registry update failed. Check console for details.");
         }
         setLoader(false);
     };
@@ -172,9 +172,7 @@ const ClassicOutlineButton = styled.button`
     font-family: serif; text-transform: uppercase; font-size: 0.8rem; cursor: pointer;
 `;
 
-const StatusNote = styled.p`
-    font-family: serif; font-style: italic; color: #1a1a1a; margin-top: 20px;
-`;
+
 
 const ClassicSelect = styled(Select)`
     && {

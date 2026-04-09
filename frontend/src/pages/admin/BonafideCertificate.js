@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getStudentDetails } from '../../redux/studentRelated/studentHandle';
+
 import { Box, Paper, Typography, Button, CircularProgress } from '@mui/material';
 import styled, { createGlobalStyle } from 'styled-components';
 import { getStudentDetail } from '../../redux/studentRelated/studentHandle';
@@ -214,9 +214,7 @@ const SignBox = styled.div`
     width: 200px;
 `;
 
-const SignLine = styled.div`
-    height: 60px; /* Space for manual sign/stamp */
-`;
+
 
 const PrintButton = styled(Button)`
     && {

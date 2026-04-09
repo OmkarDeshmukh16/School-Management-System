@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
     CssBaseline,
     Box,
@@ -49,7 +48,7 @@ import BonafideCertificate from './BonafideCertificate';
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => { setOpen(!open); };
-    const { currentUser } = useSelector((state) => state.user);
+
     return (
         <Box sx={{ display: 'flex', backgroundColor: '#f9f7f2', minHeight: '100vh' }}>
             <CssBaseline />

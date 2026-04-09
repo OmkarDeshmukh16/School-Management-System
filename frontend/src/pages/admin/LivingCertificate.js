@@ -359,46 +359,9 @@ const GeneratorWrapper = styled.div`
     }
 `;
 
-const GlobalPrintStyle = createGlobalStyle`
-  @media print {
-    /* 1. Hide everything except the certificate */
-    body * {
-        visibility: hidden;
-    }
-    #printable-certificate, #printable-certificate * {
-        visibility: visible;
-    }
-    
-    /* 2. Position the certificate at the absolute top-left */
-    #printable-certificate {
-        position: absolute;
-        left: 0;
-        top: 0;
-        visibility: visible;
-    }
 
-    /* 3. Hide browser headers/footers (URL, Date) */
-    @page {
-        size: auto;
-        margin: 0; /* Small margin to prevent printer clipping */
-    }
 
-    /* 4. Force hide the sidebar and top-nav specifically */
-    nav, aside, header, .no-print, [class*="MuiDrawer"], [class*="MuiAppBar"] {
-        display: none !important;
-    }
-  }
-`;
 
-const SchoolMeta = styled.span`
-    font-size: 0.85rem;
-    color: #333;
-`;
-
-const SchoolAddress = styled.span`
-    font-size: 0.85rem;
-    color: #333;
-`;
 
 const TitleSection = styled.div`
     text-align: center;

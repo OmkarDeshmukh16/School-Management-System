@@ -48,7 +48,7 @@ const StudentExamMarks = ({ situation }) => {
             dispatch(getUserDetails(studentID, "Student"));
         }
     }
-}, [situation, params.id, params.studentID, params.subjectID, dispatch, loading, userDetails?._id]);
+}, [situation, params, params.id, params.studentID, params.subjectID, dispatch, loading, userDetails?._id]);
 
     useEffect(() => {
         if (userDetails && userDetails.sclassName && situation === "Student") {

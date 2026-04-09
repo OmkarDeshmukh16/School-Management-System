@@ -15,7 +15,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 const TeacherClassDetails = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { sclassStudents, loading, error, getresponse } = useSelector((state) => state.sclass);
+    const { sclassStudents, loading, getresponse } = useSelector((state) => state.sclass);
 
     const { currentUser } = useSelector((state) => state.user);
     const classID = currentUser.teachSclass?._id;

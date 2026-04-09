@@ -20,7 +20,7 @@ const ShowTeachers = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { teachersList, loading, error, response } = useSelector((state) => state.teacher);
+    const { teachersList, loading, response } = useSelector((state) => state.teacher);
     const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {

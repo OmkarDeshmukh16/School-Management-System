@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import SeeNotice from '../../components/SeeNotice';
 import CountUp from 'react-countup';
 import SubjectIcon from "../../assets/subjects.svg";
-import AssignmentIcon from "../../assets/assignment.svg";
 import { getSubjectList } from '../../redux/sclassRelated/sclassHandle';
 
 const StudentHomePage = () => {
@@ -16,7 +15,6 @@ const StudentHomePage = () => {
 
     const { userDetails, currentUser, loading } = useSelector((state) => state.user);
     const { subjectsList } = useSelector((state) => state.sclass);
-    const student = userDetails || {};
     const [subjectAttendance, setSubjectAttendance] = useState([]);
 
     const classID = currentUser.sclassName._id
@@ -43,21 +41,7 @@ const StudentHomePage = () => {
 
     // const fees = student.fees || { totalAmount: 0, paidAmount: 0, balanceAmount: 0 };
 
-    const NotificationBell = ({ notices }) => {
-        return (
-            <Paper elevation={0} sx={{ p: 2, border: '1px solid #e0dcd0', bgcolor: '#fdfcf8' }}>
-                <SectionTitle>Official Notifications</SectionTitle>
-                {notices.map((notice) => (
-                    <NoticeItem key={notice._id} isFinancial={notice.category === 'Financial'}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-                            {notice.title} {notice.category === 'Financial' && "⚠️"}
-                        </Typography>
-                        <Typography variant="body2">{notice.details}</Typography>
-                    </NoticeItem>
-                ))}
-            </Paper>
-        );
-    };
+
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -269,11 +253,4 @@ const ValueText = styled.p`
     font-size: 2.2rem;
     color: #1a1a1a;
     margin: 0;
-`;
-
-const NoticeItem = styled(Box)`
-    padding: 10px;
-    margin-bottom: 10px;
-    border-left: 4px solid ${props => props.isFinancial ? '#d32f2f' : '#1a1a1a'};
-    background: ${props => props.isFinancial ? '#fffbfa' : 'transparent'};
 `;

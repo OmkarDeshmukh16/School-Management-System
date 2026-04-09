@@ -15,7 +15,7 @@ import SpeedDialTemplate from '../../../components/SpeedDialTemplate';
 const ShowNotices = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { noticesList, loading, error, response } = useSelector((state) => state.notice);
+    const { noticesList, loading, response } = useSelector((state) => state.notice);
     const { currentUser } = useSelector(state => state.user);
 
     useEffect(() => {

@@ -40,7 +40,7 @@ const ViewStudent = () => {
 
     const [openStates, setOpenStates] = useState({});
     const [showPopup, setShowPopup] = useState(false);
-    const [message, setMessage] = useState('');
+    const [message] = useState('');
     const [value, setValue] = useState('1');
     const [selectedSection, setSelectedSection] = useState('table');
 

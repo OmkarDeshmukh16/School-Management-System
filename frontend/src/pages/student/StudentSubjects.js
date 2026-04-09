@@ -15,7 +15,7 @@ import { StyledTableCell, StyledTableRow } from '../../components/styles';
 const StudentSubjects = () => {
     const dispatch = useDispatch();
     const { subjectsList, sclassDetails } = useSelector((state) => state.sclass);
-    const { userDetails, currentUser, loading, response, error } = useSelector((state) => state.user);
+    const { userDetails, currentUser, loading } = useSelector((state) => state.user);
 
     useEffect(() => {
         dispatch(getUserDetails(currentUser._id, "Student"));

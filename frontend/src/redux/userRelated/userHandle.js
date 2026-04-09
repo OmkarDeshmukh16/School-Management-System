@@ -8,7 +8,6 @@ import {
     authError,
     authLogout,
     doneSuccess,
-    getDeleteSuccess,
     getRequest,
     getFailed,
     getError,

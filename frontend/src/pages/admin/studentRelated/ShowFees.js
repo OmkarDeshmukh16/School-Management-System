@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Button, Grid, MenuItem, Select, TextField } from '@mui/material';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid, MenuItem, Select, TextField } from '@mui/material';
 import styled from 'styled-components';
 import { getAllStudents } from '../../../redux/studentRelated/studentHandle';
-import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASEURL } from '../../../utils/apiConfig';
@@ -12,14 +11,11 @@ import { useState } from 'react';
 const ShowFees = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { studentsList, loading } = useSelector((state) => state.student);
+    const { studentsList } = useSelector((state) => state.student);
     const { sclassesList } = useSelector((state) => state.sclass);
     const [selectedSclass, setSelectedSclass] = useState("");
     const [classFee, setClassFee] = useState("");
-    const [message, setMessage] = useState("");
-    const [showPopup, setShowPopup] = useState(false);
     const { currentUser } = useSelector((state) => state.user);
-    const [severity, setSeverity] = useState("success");
 
     useEffect(() => {
         // Only dispatch if currentUser and _id exist
@@ -29,26 +25,20 @@ const ShowFees = () => {
     }, [currentUser?._id, dispatch]);
     const handleSetFees = async () => {
         if (!selectedSclass || !classFee) {
-            setMessage("Please select a cohort and specify the amount.");
-            setSeverity("error");
-            setShowPopup(true);
+            alert("Please select a cohort and specify the amount.");
             return;
         }
 
         try {
-            const res = await axios.post(`${BASEURL}/SetClassFees`, {
+            await axios.post(`${BASEURL}/SetClassFees`, {
                 sclassName: selectedSclass,
                 totalAmount: classFee,
                 school: currentUser._id
             });
-            setMessage(`Success: Fees updated for the selected Class.`);
-            setSeverity("success");
-            setShowPopup(true);
+            alert(`Success: Fees updated for the selected Class.`);
             dispatch(getAllStudents(currentUser._id)); // Refresh the table
         } catch (err) {
-            setMessage("Registry update failed.");
-            setSeverity("error");
-            setShowPopup(true);
+            alert("Registry update failed.");
         }
     };
     return (

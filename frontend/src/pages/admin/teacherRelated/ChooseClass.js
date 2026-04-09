@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, Typography, Paper, CircularProgress } from '@mui/material'
+import { Box, Typography, Paper, CircularProgress } from '@mui/material'
 import { getAllSclasses } from '../../../redux/sclassRelated/sclassHandle';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';

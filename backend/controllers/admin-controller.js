@@ -24,6 +24,8 @@ const adminRegister = async (req, res) => {
             res.send({ message: 'School name already exists' });
         }
         else {
+            const salt = await bcrypt.genSalt(10);
+            admin.password = await bcrypt.hash(req.body.password, salt);
             let result = await admin.save();
             result.password = undefined;
             res.send(result);
@@ -37,7 +39,15 @@ const adminLogIn = async (req, res) => {
     if (req.body.email && req.body.password) {
         let admin = await Admin.findOne({ email: req.body.email });
         if (admin) {
-            if (req.body.password === admin.password) {
+            let isValid = false;
+            // Check for bcrypt hash or fallback to plaintext for old accounts
+            if (admin.password.startsWith('$2')) {
+                isValid = await bcrypt.compare(req.body.password, admin.password);
+            } else {
+                isValid = (req.body.password === admin.password);
+            }
+
+            if (isValid) {
                 admin.password = undefined;
                 res.send(admin);
             } else {

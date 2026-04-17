@@ -24,20 +24,17 @@ const adminSchema = new mongoose.Schema({
         required: true
     },
     udiseNumber: {
-        type: String, unique: true,
-        required: true
+        type: String
     },
     recognitionNumber: { type: String },
     board: {
-        type: String,
-        required: true
+        type: String
     },
     medium: {
-        type: String,
-        required: true
+        type: String
     },
-    address: { type: String, required: true },
-    mobile: { type: String, required: true },
+    address: { type: String },
+    mobile: { type: String },
     schoolLogo: { type: String },
 
     bankDetails: {

@@ -28,6 +28,9 @@ const bulkStudentRegistration = async (req, res) => {
             const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
 
             return {
+                generalRegisterNo: row["generalRegisterNo"] || "",
+                penNumber: row["penNumber"] || "",
+                uid: row["uid"] || "",
                 name: row["Name"],
                 rollNum: row["Roll Number"],
                 password: hashedPassword, // Store the HASH, not the text
@@ -36,14 +39,22 @@ const bulkStudentRegistration = async (req, res) => {
                 email: row["Email"] || "",
                 gender: row["Gender"] || "",
                 dob: row["Date of birth"] ? new Date(row["Date of birth"]) : null,
+                birthDateInWords: row["birthDateInWords"] || "",
                 nationality: row["Nationality"] || "Indian",
+                motherName: row["Mother's Name"] || "",
                 motherTongue: row["Mother Tongue"] || "",
                 religion: row["Religion"] || "",
                 caste: row["Caste"] || "",
                 subCaste: row["Sub caste"] || "",
                 birthPlace: row["Birth Place"] || "",
+                previousSchoolName: row["Previous School Name"] || "",
+                previousSchoolStandard: row["Previous School Standard"] || "",
+                admissionDate: row["Admission Date"] ? new Date(row["Admission Date"]) : null,
                 phone: row["Mob no."] ? String(row["Mob no."]) : "",
                 address: row["Address"] || "",
+                village: row["Village"] || "",
+                taluka: row["Taluka"] || "",
+                district: row["District"] || "",
                 role: 'Student'
             };
         }));

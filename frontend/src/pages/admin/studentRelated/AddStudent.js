@@ -100,7 +100,7 @@ const AddStudent = () => {
     };
 
     useEffect(() => {
-        if (status === 'success') {
+        if (status === 'added') {
             setLoader(false);
             setMessage("Student successfully enrolled in the registry.");
             setShowPopup(true);

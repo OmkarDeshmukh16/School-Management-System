@@ -23,6 +23,20 @@ const adminSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    schoolId: {
+        type: String,
+        unique: true,
+        sparse: true, // Allow existing docs without schoolId
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
+    plan: {
+        type: String,
+        enum: ["free", "foundation", "professional", "enterprise"],
+        default: "free",
+    },
     udiseNumber: {
         type: String
     },
@@ -43,7 +57,11 @@ const adminSchema = new mongoose.Schema({
         ifscCode: { type: String, default: "" },
         bankName: { type: String, default: "" },
         branchName: { type: String, default: "" }
-    }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 module.exports = mongoose.model("admin", adminSchema)

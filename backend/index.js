@@ -13,7 +13,11 @@ dotenv.config();
 // app.use(bodyParser.json({ limit: '10mb', extended: true }))
 // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
-app.use(express.json({ limit: '50mb' }))
+// Capture raw body for Razorpay webhook signature verification
+app.use(express.json({
+    limit: '50mb',
+    verify: (req, res, buf) => { req.rawBody = buf; }
+}))
 app.use(cors())
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -22,7 +26,24 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
-    .then(console.log("Connected to MongoDB"))
+    .then(async () => {
+        console.log("Connected to MongoDB");
+
+        // Clean up stale unique indexes that cause duplicate key errors on null values
+        try {
+            const adminCollection = mongoose.connection.collection('admins');
+            const indexes = await adminCollection.indexes();
+            const staleIndexes = ['udiseNumber_1', 'recognitionNumber_1'];
+            for (const idxName of staleIndexes) {
+                if (indexes.find(i => i.name === idxName)) {
+                    await adminCollection.dropIndex(idxName);
+                    console.log(`Dropped stale index: ${idxName}`);
+                }
+            }
+        } catch (err) {
+            console.log('Index cleanup note:', err.message);
+        }
+    })
     .catch((err) => console.log("NOT CONNECTED TO NETWORK", err))
 
 app.use('/', Routes);

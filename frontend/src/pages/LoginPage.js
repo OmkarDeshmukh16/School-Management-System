@@ -159,7 +159,7 @@ const LoginPage = ({ role }) => {
                             {role === "Admin" && (
                                 <Box sx={{ mt: 3, textAlign: 'center' }}>
                                     <Typography variant="body2" sx={{ fontFamily: 'serif', fontStyle: 'italic' }}>
-                                        New Administrator? <StyledLink to="/Adminregister">Establish Account</StyledLink>
+                                        New School? <StyledLink to="/request-demo">Request a Demo</StyledLink>
                                     </Typography>
                                 </Box>
                             )}

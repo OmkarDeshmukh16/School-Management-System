@@ -32,11 +32,38 @@ const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeac
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); 
 const { bulkStudentRegistration } = require('../controllers/student_controller.js');
+
+// --- Super Admin & Demo Request Controllers ---
+const { submitDemoRequest } = require('../controllers/demo-controller.js');
+const {
+    superAdminLogin,
+    createSchool,
+    getAllSchools,
+    toggleSchoolStatus,
+    updateSchoolPlan,
+    updateSchoolInfo,
+    getDemoRequests,
+    updateDemoRequestStatus,
+    getDashboardStats,
+    razorpayWebhook,
+} = require('../controllers/superadmin-controller.js');
+const { verifyToken, requireRole } = require('../middleware/auth.js');
+
 // const { createOrder, verifyPayment } = require('../controllers/payment-controller');
 // const { FeeNotice } = require('../controllers/notice-controller.js')
 
-// Admin
-router.post('/AdminReg', adminRegister);
+// ============================================================
+// PUBLIC ROUTES (no auth required)
+// ============================================================
+
+// Demo Request (public — replaces open registration)
+router.post('/DemoRequest', submitDemoRequest);
+
+// Razorpay Webhook (PUBLIC — no auth; security via signature verification)
+router.post('/webhook/razorpay', razorpayWebhook);
+
+// Admin (school admin login only — registration is disabled)
+// router.post('/AdminReg', adminRegister); // DISABLED: Public registration removed
 router.post('/AdminLogin', adminLogIn);
 
 router.get("/Admin/:id", getAdminDetail)
@@ -139,4 +166,21 @@ router.post('/BulkStudentReg', upload.single('excelFile'), bulkStudentRegistrati
 // router.post('/createOrder', createOrder);
 // router.post('/verifyPayment', verifyPayment);
 // router.post('/SetClassFees', setClassFees);
+
+// ============================================================
+// SUPER ADMIN ROUTES (JWT protected)
+// ============================================================
+
+router.post('/SuperAdminLogin', superAdminLogin);
+
+// All Super Admin management routes require JWT + SuperAdmin role
+router.get('/SuperAdmin/Dashboard', verifyToken, requireRole('SuperAdmin'), getDashboardStats);
+router.get('/SuperAdmin/Schools', verifyToken, requireRole('SuperAdmin'), getAllSchools);
+router.post('/SuperAdmin/CreateSchool', verifyToken, requireRole('SuperAdmin'), createSchool);
+router.put('/SuperAdmin/School/:id/toggle', verifyToken, requireRole('SuperAdmin'), toggleSchoolStatus);
+router.put('/SuperAdmin/School/:id/plan', verifyToken, requireRole('SuperAdmin'), updateSchoolPlan);
+router.put('/SuperAdmin/School/:id', verifyToken, requireRole('SuperAdmin'), updateSchoolInfo);
+router.get('/SuperAdmin/DemoRequests', verifyToken, requireRole('SuperAdmin'), getDemoRequests);
+router.put('/SuperAdmin/DemoRequest/:id', verifyToken, requireRole('SuperAdmin'), updateDemoRequestStatus);
+
 module.exports = router;

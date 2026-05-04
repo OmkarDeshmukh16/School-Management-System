@@ -39,8 +39,8 @@ const Homepage = () => {
                                 <Primary3DButton variant="contained" component={Link} to="/choose">
                                     Launch System Dashboard
                                 </Primary3DButton>
-                                <SecondaryGhostButton variant="outlined" component={Link} to="/Adminregister">
-                                    Initialize New Registry
+                                <SecondaryGhostButton variant="outlined" component={Link} to="/request-demo">
+                                    Request a Demo
                                 </SecondaryGhostButton>
                             </ActionGroup>
 
@@ -142,8 +142,10 @@ const Homepage = () => {
                                         variant={plan.highlight ? "contained" : "outlined"}
                                         fullWidth
                                         isHighlighted={plan.highlight}
+                                        component={Link}
+                                        to="/request-demo"
                                     >
-                                        {plan.buttonText}
+                                        Request Demo
                                     </PricingButton>
                                 </PriceCard>
                             </Grid>

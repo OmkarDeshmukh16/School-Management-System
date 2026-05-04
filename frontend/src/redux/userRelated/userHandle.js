@@ -23,6 +23,10 @@ export const loginUser = (fields, role) => async (dispatch) => {
         });
 
         if (result.data.role) {
+            // Store token in localStorage if present
+            if (result.data.token) {
+                localStorage.setItem('token', result.data.token);
+            }
             dispatch(authSuccess(result.data));
         } else {
             dispatch(authFailed(result.data.message));
@@ -30,6 +34,31 @@ export const loginUser = (fields, role) => async (dispatch) => {
     } catch (error) {
         if (!error.response) {
             dispatch(authError("The server is currently unreachable. Please verify the connection."));
+        } else {
+            dispatch(authError(error.response.data.message || "Authentication failed."));
+        }
+    }
+};
+
+export const loginSuperAdmin = (fields) => async (dispatch) => {
+    dispatch(authRequest());
+
+    try {
+        const result = await axios.post(`${BASEURL}/SuperAdminLogin`, fields, {
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (result.data.role === 'SuperAdmin' && result.data.token) {
+            localStorage.setItem('token', result.data.token);
+            dispatch(authSuccess(result.data));
+        } else if (result.data.message) {
+            dispatch(authFailed(result.data.message));
+        } else {
+            dispatch(authFailed("Login failed"));
+        }
+    } catch (error) {
+        if (!error.response) {
+            dispatch(authError("The server is currently unreachable."));
         } else {
             dispatch(authError(error.response.data.message || "Authentication failed."));
         }

@@ -6,6 +6,7 @@ const Teacher = require('../models/teacherSchema.js');
 const Subject = require('../models/subjectSchema.js');
 const Notice = require('../models/noticeSchema.js');
 const Complain = require('../models/complainSchema.js');
+const { generateToken } = require('../middleware/auth.js');
 
 
 const adminRegister = async (req, res) => {
@@ -39,6 +40,11 @@ const adminLogIn = async (req, res) => {
     if (req.body.email && req.body.password) {
         let admin = await Admin.findOne({ email: req.body.email });
         if (admin) {
+            // Check if school is deactivated
+            if (admin.isActive === false) {
+                return res.send({ message: "Your school account has been deactivated. Please contact the platform administrator." });
+            }
+
             let isValid = false;
             // Check for bcrypt hash or fallback to plaintext for old accounts
             if (admin.password.startsWith('$2')) {
@@ -48,8 +54,17 @@ const adminLogIn = async (req, res) => {
             }
 
             if (isValid) {
+                // Generate JWT token
+                const token = generateToken({
+                    id: admin._id,
+                    role: admin.role,
+                    schoolId: admin.schoolId,
+                });
+
                 admin.password = undefined;
-                res.send(admin);
+                const adminData = admin.toObject();
+                adminData.token = token;
+                res.send(adminData);
             } else {
                 res.send({ message: "Invalid password" });
             }

@@ -105,7 +105,7 @@ const sendPaymentEmail = async (demoRequest) => {
         <!-- Footer -->
         <div style="background:#fdfcf8; border-top:1px solid #e0dcd0; padding:20px 40px; text-align:center;">
             <p style="color:#999; font-size:12px; margin:0;">
-                © ${new Date().getFullYear()} OM SaaS Platform · School Management System
+                © ${new Date().getFullYear()} OmTech Solution's SaaS Platform · School Management System
             </p>
         </div>
     </div>
@@ -116,6 +116,95 @@ const sendPaymentEmail = async (demoRequest) => {
 
     await transporter.sendMail(mailOptions);
     console.log(`✉ Payment email sent to ${demoRequest.email}`);
+};
+
+/**
+ * Send payment receipt email to client
+ */
+const sendReceiptEmail = async (demoRequest) => {
+    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+
+    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+        throw new Error('SMTP not configured — skipping receipt email');
+    }
+
+    const transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: parseInt(SMTP_PORT) || 587,
+        secure: false,
+        auth: {
+            user: SMTP_USER,
+            pass: SMTP_PASS,
+        },
+    });
+
+    const mailOptions = {
+        from: `"OM SaaS Platform" <${SMTP_USER}>`,
+        to: demoRequest.email,
+        subject: `Payment Receipt — ${demoRequest.schoolName} Onboarding`,
+        html: `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f5f3ee; font-family: Georgia, 'Times New Roman', serif;">
+    <div style="max-width:600px; margin:40px auto; background:#ffffff; border:1px solid #e0dcd0; box-shadow:4px 4px 0px #e0dcd0;">
+        <!-- Header -->
+        <div style="background:#1a1a1a; padding:30px 40px; text-align:center;">
+            <h1 style="color:#ffffff; margin:0; font-size:22px; font-weight:400; letter-spacing:2px; text-transform:uppercase;">
+                OM SaaS Platform
+            </h1>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:40px;">
+            <p style="color:#333; font-size:16px; line-height:1.6; margin:0 0 10px 0;">
+                Dear <strong>${demoRequest.contactPerson}</strong>,
+            </p>
+            <p style="color:#555; font-size:15px; line-height:1.6; margin:0 0 25px 0;">
+                We have successfully received your payment for the onboarding of <strong>${demoRequest.schoolName}</strong>.
+            </p>
+
+            <!-- Amount Box -->
+            <div style="background:#e8f5e9; border:1px solid #a5d6a7; padding:20px; margin:0 0 25px 0; text-align:center;">
+                <p style="color:#2e7d32; font-size:13px; text-transform:uppercase; letter-spacing:1px; margin:0 0 8px 0;">
+                    Payment Successful
+                </p>
+                <p style="color:#1a1a1a; font-size:32px; font-weight:700; margin:0;">
+                    ₹${demoRequest.amount.toLocaleString('en-IN')}
+                </p>
+            </div>
+            
+            <div style="margin:0 0 25px 0;">
+                <p style="color:#555; font-size:14px; margin:0 0 5px 0;"><strong>Payment ID:</strong> ${demoRequest.paymentId || 'N/A'}</p>
+                <p style="color:#555; font-size:14px; margin:0 0 5px 0;"><strong>Date:</strong> ${new Date(demoRequest.paidAt || Date.now()).toLocaleString()}</p>
+            </div>
+
+            <p style="color:#555; font-size:15px; line-height:1.6; margin:0 0 25px 0;">
+                Our team will now proceed with setting up your school account. You will receive your login credentials shortly.
+            </p>
+
+            <p style="color:#999; font-size:13px; line-height:1.5; margin:20px 0 0 0; text-align:center;">
+                If you have any questions, reply to this email.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="background:#fdfcf8; border-top:1px solid #e0dcd0; padding:20px 40px; text-align:center;">
+            <p style="color:#999; font-size:12px; margin:0;">
+                © ${new Date().getFullYear()} OM SaaS Platform · School Management System
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+        `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✉ Receipt email sent to ${demoRequest.email}`);
 };
 
 // ============================================================
@@ -464,6 +553,23 @@ const updateDemoRequestStatus = async (req, res) => {
 
         // ── Handle all other status updates (simple update) ──
         demoRequest.status = status;
+
+        // If manually setting to 'paid', ensure payment fields are synced
+        if (status === 'paid' && demoRequest.paymentStatus !== 'paid') {
+            demoRequest.paymentStatus = 'paid';
+            demoRequest.paidAt = new Date();
+            if (!demoRequest.paymentId) {
+                demoRequest.paymentId = 'manual_' + Date.now();
+            }
+
+            // Try to send receipt
+            try {
+                await sendReceiptEmail(demoRequest);
+            } catch (emailErr) {
+                console.log('⚠ Receipt email skipped (SMTP not configured or failed):', emailErr.message);
+            }
+        }
+
         await demoRequest.save();
 
         res.json({ message: 'Status updated', request: demoRequest });
@@ -539,6 +645,13 @@ const razorpayWebhook = async (req, res) => {
             await demoRequest.save();
 
             console.log(`✅ Payment confirmed for ${demoRequest.schoolName} — ₹${demoRequest.amount}`);
+
+            // Send receipt email to the client
+            try {
+                await sendReceiptEmail(demoRequest);
+            } catch (emailErr) {
+                console.log('⚠ Receipt email skipped (SMTP not configured or failed):', emailErr.message);
+            }
         }
 
         // Always respond 200 to Razorpay (even for events we don't handle)

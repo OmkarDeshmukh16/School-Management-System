@@ -1,141 +1,209 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Box, Button, Typography, Container, Paper } from '@mui/material';
+import { Grid, Box, Button, Typography, Container, Paper, TextField, Snackbar, Alert, Fab } from '@mui/material';
 import styled from 'styled-components';
 import logo from '../assets/logo.png';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ArticleIcon from '@mui/icons-material/Article';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import CampaignIcon from '@mui/icons-material/Campaign';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import axios from 'axios';
+import { BASEURL } from '../utils/apiConfig';
+import Hero from '../components/Hero';
 
 const Homepage = () => {
+    // --- Contact Form State ---
+    const [contactData, setContactData] = useState({
+        schoolName: '',
+        contactPerson: '',
+        phone: '',
+        email: '',
+        message: ''
+    });
+    const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+    const handleContactChange = (e) => {
+        setContactData({ ...contactData, [e.target.name]: e.target.value });
+    };
+
+    const handleContactSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const payload = {
+                schoolName: contactData.schoolName,
+                contactPerson: contactData.contactPerson,
+                phone: contactData.phone,
+                email: contactData.email,
+                message: contactData.message
+            };
+            await axios.post(`${BASEURL}/DemoRequest`, payload);
+            setSnackbar({ open: true, message: 'Message sent successfully! We will contact you soon.', severity: 'success' });
+            setContactData({ schoolName: '', contactPerson: '', phone: '', email: '', message: '' });
+        } catch (err) {
+            setSnackbar({ open: true, message: err.response?.data?.message || 'Failed to send message', severity: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const scrollToDemo = () => {
+        document.getElementById('demo-preview').scrollIntoView({ behavior: 'smooth' });
+    };
+
     return (
         <FullPageWrapper>
             {/* --- HERO SECTION --- */}
-            <HeroSection container>
-                <Grid item xs={12} md={6}>
-                    <BrandingPanel>
-                        <LogoImage src={logo} alt="Nexus Institutional Seal" />
-                        <BrandingDecor>
-                            <YearText>EST. 2026</YearText>
-                            <MottoText>"Precision in Administration, Excellence in Education"</MottoText>
-                        </BrandingDecor>
-                    </BrandingPanel>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <EntryPanel>
-                        <ContentWrapper>
-                            <Typography variant="overline" sx={{ color: '#7d6b5d', letterSpacing: 3, fontWeight: 'bold' }}>
-                                OM SaaS Solution
-                            </Typography>
-                            <MainTitle> School Management</MainTitle>
-                            <HorizontalDivider />
-                            <AbstractText>
-                                A comprehensive digital ecosystem designed for institutional transparency.
-                                From real-time **Fee Ledgers** to automated **Grievance Management**,
-                                Nexus empowers administrators with data-driven precision.
-                            </AbstractText>
-                            <ActionGroup>
-                                <Primary3DButton variant="contained" component={Link} to="/choose">
-                                    Launch System Dashboard
-                                </Primary3DButton>
-                                <SecondaryGhostButton variant="outlined" component={Link} to="/request-demo">
-                                    Request a Demo
-                                </SecondaryGhostButton>
-                            </ActionGroup>
+            <Hero onWatchDemo={scrollToDemo} />
 
-                        </ContentWrapper>
-                    </EntryPanel>
-                </Grid>
-            </HeroSection>
+            {/* --- TRUST SECTION --- */}
+            <TrustSection>
+                <Container maxWidth="lg">
+                    <TrustText>Trusted by Schools Across Maharashtra • Used by 500+ Students</TrustText>
+                </Container>
+            </TrustSection>
 
-            {/* --- FEATURE SHOWCASE (The Sales Cards) --- */}
+            {/* --- WHY CHOOSE US (BENEFITS) --- */}
             <FeatureSection>
                 <Container maxWidth="lg">
                     <SectionHeaderBox>
-                        <SectionTitle>Institutional Infrastructure</SectionTitle>
-                        <TypographySubtitle>Advanced modules designed for administrative excellence</TypographySubtitle>
+                        <SectionTitle>Why Choose Us?</SectionTitle>
+                        <TypographySubtitle>A system built to make your life easier, not more complicated.</TypographySubtitle>
+                        <HorizontalDivider style={{ margin: '20px auto 0 auto' }} />
                     </SectionHeaderBox>
                     <Grid container spacing={4}>
                         <Grid item xs={12} md={3}>
                             <FeatureCard>
-                                <IconCircle><AdminPanelSettingsIcon /></IconCircle>
-                                <CardTitle>System Admin</CardTitle>
-                                <CardText>Full oversight of Faculty, Students, and Class registries from one unified "Institutional Overview".</CardText>
+                                <IconCircle><AccessTimeIcon /></IconCircle>
+                                <CardTitle>Save 5+ Hours Daily</CardTitle>
+                                <CardText>Automate fee reminders, attendance, and notices so your staff can focus on what matters.</CardText>
                             </FeatureCard>
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <FeatureCard>
-                                <IconCircle><ReceiptLongIcon /></IconCircle>
-                                <CardTitle>Financial Ledger</CardTitle>
-                                <CardText>Real-time monitoring of Fee collections and individual payment statuses.</CardText>
+                                <IconCircle><ArticleIcon /></IconCircle>
+                                <CardTitle>Reduce Manual Paperwork</CardTitle>
+                                <CardText>Move everything to the cloud. Access student records, staff details, and documents instantly.</CardText>
                             </FeatureCard>
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <FeatureCard>
                                 <IconCircle><AssessmentIcon /></IconCircle>
-                                <CardTitle>Academic Suite</CardTitle>
-                                <CardText>Bulk marks entry for faculty and automated "Student Report" generation for students.</CardText>
+                                <CardTitle>Instant Report Generation</CardTitle>
+                                <CardText>Generate academic reports, fee defaulter lists, and ID cards with a single click.</CardText>
                             </FeatureCard>
                         </Grid>
                         <Grid item xs={12} md={3}>
                             <FeatureCard>
-                                <IconCircle><CampaignIcon /></IconCircle>
-                                <CardTitle>Notice Board</CardTitle>
-                                <CardText>Broadcast official notices and holiday alerts instantly across the "Bulletin Board".</CardText>
+                                <IconCircle><SentimentSatisfiedAltIcon /></IconCircle>
+                                <CardTitle>Easy for Non-Tech Staff</CardTitle>
+                                <CardText>Designed with absolute simplicity. If you can use WhatsApp, you can use our system.</CardText>
                             </FeatureCard>
                         </Grid>
                     </Grid>
                 </Container>
             </FeatureSection>
 
+            {/* --- DEMO PREVIEW --- */}
+            <DemoPreviewSection id="demo-preview">
+                <Container maxWidth="lg">
+                    <SectionHeaderBox>
+                        <SectionTitle>See How It Works</SectionTitle>
+                        <TypographySubtitle>Take a look inside the modern dashboard built for school admins</TypographySubtitle>
+                        <HorizontalDivider style={{ margin: '20px auto 0 auto' }} />
+                    </SectionHeaderBox>
+                    <MockupContainer>
+                        <MockupHeader>
+                            <MockupDot style={{ backgroundColor: '#ff5f56' }} />
+                            <MockupDot style={{ backgroundColor: '#ffbd2e' }} />
+                            <MockupDot style={{ backgroundColor: '#27c93f' }} />
+                        </MockupHeader>
+                        <MockupBody>
+                            <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                <PlayCircleOutlineIcon sx={{ fontSize: '5rem', color: '#1a1a1a', opacity: 0.8 }} />
+                                <Typography variant="h5" sx={{ fontFamily: 'Georgia, serif', color: '#1a1a1a' }}>
+                                    Dashboard Overview Preview
+                                </Typography>
+                                <Typography sx={{ color: '#666', fontFamily: 'serif' }}>
+                                    (A video or high-quality screenshot goes here)
+                                </Typography>
+                            </Box>
+                        </MockupBody>
+                    </MockupContainer>
+                </Container>
+            </DemoPreviewSection>
+
+            {/* --- TESTIMONIALS --- */}
+            <TestimonialSection>
+                <Container maxWidth="md">
+                    <TestimonialQuote>
+                        "This system completely transformed how we operate. It saved our staff hours of manual data entry and made fee collection entirely stress-free."
+                    </TestimonialQuote>
+                    <TestimonialAuthor>
+                        — Principal, Leading School in Pune
+                    </TestimonialAuthor>
+                </Container>
+            </TestimonialSection>
+
             {/* --- PRICING TIER SECTION --- */}
             <PricingSection id="pricing">
                 <Container maxWidth="lg">
                     <SectionHeaderBox>
-                        <SectionTitle>Institutional Investment</SectionTitle>
+                        <SectionTitle>Simple, Transparent Pricing</SectionTitle>
                         <TypographySubtitle>Select a plan tailored to your institution's scale</TypographySubtitle>
-                        <HorizontalDivider />
+                        
+                        <UrgencyBanner>
+                            🚀 Get Free Setup for First 10 Schools! Register today.
+                        </UrgencyBanner>
+
+                        <HorizontalDivider style={{ margin: '30px auto 0 auto' }} />
                     </SectionHeaderBox>
 
                     <Grid container spacing={4} justifyContent="center">
                         {[
                             {
                                 tier: "Foundation",
+                                tag: "Best for small schools",
                                 price: "₹4,999",
                                 period: "per month",
-                                features: ["Up to 200 Scholars", "Attendance Registry", "Basic Notice Board", "Email Support"],
-                                buttonText: "Buy Now",
+                                features: ["Up to 200 Students", "Attendance Registry", "Basic Notice Board", "Email Support"],
+                                buttonText: "Request Demo",
                                 highlight: false
                             },
                             {
                                 tier: "Professional",
+                                tag: "Most popular",
                                 price: "₹9,999",
                                 period: "per month",
-                                features: ["Up to 1000 Scholars", "Financial Ledger", "Grievance Record", "Priority Support"],
-                                buttonText: "Buy Now",
+                                features: ["Up to 1000 Students", "Financial Ledger", "Grievance Record", "Priority Support"],
+                                buttonText: "Request Demo",
                                 highlight: true
                             },
                             {
                                 tier: "Enterprise",
-                                price: "coming soon",
+                                tag: "For large institutions",
+                                price: "Custom",
                                 period: "Annual Billing",
-                                features: ["Unlimited Scholars", "AI Documents Generator", "Custom Domain", "Dedicated Manager"],
-                                buttonText: "Buy Now",
+                                features: ["Unlimited Students", "AI Documents Generator", "Custom Domain", "Dedicated Manager"],
+                                buttonText: "Contact Us",
                                 highlight: false
                             }
                         ].map((plan, index) => (
                             <Grid item xs={12} md={4} key={index}>
                                 <PriceCard isHighlighted={plan.highlight}>
                                     {plan.highlight && <Ribbon>Most Selected</Ribbon>}
+                                    <PlanTag isHighlighted={plan.highlight}>{plan.tag}</PlanTag>
                                     <TierName>{plan.tier}</TierName>
                                     <PriceDisplay>
                                         <Currency>{plan.price}</Currency>
-                                        <Period> / {plan.period}</Period>
+                                        <Period> {plan.price !== 'Custom' ? `/ ${plan.period}` : ''}</Period>
                                     </PriceDisplay>
                                     <FeatureList>
                                         {plan.features.map((f, i) => (
-                                            <FeatureItem key={i}>— {f}</FeatureItem>
+                                            <FeatureItem key={i}><CheckCircleOutlineIcon sx={{ fontSize: '1rem', mr: 1, color: plan.highlight ? '#1a1a1a' : '#7d6b5d' }}/> {f}</FeatureItem>
                                         ))}
                                     </FeatureList>
                                     <PricingButton
@@ -145,7 +213,7 @@ const Homepage = () => {
                                         component={Link}
                                         to="/request-demo"
                                     >
-                                        Request Demo
+                                        {plan.buttonText}
                                     </PricingButton>
                                 </PriceCard>
                             </Grid>
@@ -154,22 +222,118 @@ const Homepage = () => {
                 </Container>
             </PricingSection>
 
+            {/* --- CONTACT / LEAD FORM --- */}
+            <ContactSection id="contact">
+                <Container maxWidth="md">
+                    <ContactPaper>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={5}>
+                                <Box sx={{ p: 2 }}>
+                                    <Typography variant="h4" sx={{ fontFamily: 'Georgia, serif', mb: 2, textTransform: 'uppercase' }}>
+                                        Let's Talk
+                                    </Typography>
+                                    <Typography sx={{ fontFamily: 'serif', color: '#666', mb: 4, lineHeight: 1.6 }}>
+                                        Prefer to speak directly? Send us a message and our team will get back to you within 24 hours to discuss how we can help your school.
+                                    </Typography>
+                                    
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>Email Us</Typography>
+                                        <Typography sx={{ color: '#7d6b5d', fontFamily: 'serif' }}>officialporas@gmail.com</Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>Location</Typography>
+                                        <Typography sx={{ color: '#7d6b5d', fontFamily: 'serif' }}>Pune, Maharashtra</Typography>
+                                    </Box>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} md={7}>
+                                <form onSubmit={handleContactSubmit}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
+                                            <StyledTextField
+                                                fullWidth
+                                                label="School Name"
+                                                name="schoolName"
+                                                value={contactData.schoolName}
+                                                onChange={handleContactChange}
+                                                required
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <StyledTextField
+                                                fullWidth
+                                                label="Contact Person"
+                                                name="contactPerson"
+                                                value={contactData.contactPerson}
+                                                onChange={handleContactChange}
+                                                required
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <StyledTextField
+                                                fullWidth
+                                                label="Phone Number"
+                                                name="phone"
+                                                value={contactData.phone}
+                                                onChange={handleContactChange}
+                                                required
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <StyledTextField
+                                                fullWidth
+                                                label="Email Address"
+                                                name="email"
+                                                type="email"
+                                                value={contactData.email}
+                                                onChange={handleContactChange}
+                                                required
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <StyledTextField
+                                                fullWidth
+                                                label="Message (Optional)"
+                                                name="message"
+                                                multiline
+                                                rows={4}
+                                                value={contactData.message}
+                                                onChange={handleContactChange}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Primary3DButton type="submit" fullWidth disabled={loading}>
+                                                {loading ? 'Sending...' : 'Send Message'}
+                                            </Primary3DButton>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            </Grid>
+                        </Grid>
+                    </ContactPaper>
+                </Container>
+            </ContactSection>
+
             {/* --- PROFESSIONAL FOOTER --- */}
             <FooterSection>
                 <Container maxWidth="lg">
                     <Grid container spacing={8}>
                         <Grid item xs={12} md={4}>
-                            <FooterBrandText>SMART SCHOOL MGT </FooterBrandText>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                <img src={logo} alt="Logo" style={{ height: '40px', filter: 'brightness(0) invert(1)', marginRight: '15px' }} />
+                                <FooterBrandText style={{ margin: 0 }}>OM SAAS</FooterBrandText>
+                            </Box>
                             <FooterDescription>
                                 Developed by Omkar Deshmukh.
-                                A high-performance MERN solutions for educational digital transformation in India.
+                                A high-performance MERN solution for educational digital transformation in India.
                             </FooterDescription>
                         </Grid>
                         <Grid item xs={12} md={4}>
-                            <FooterHeading>Portals</FooterHeading>
-                            <FooterLink to="/choose">Administrative Home</FooterLink>
-                            <FooterLink to="/choose">Faculty Examination Registry</FooterLink>
-                            <FooterLink to="/choose">Scholar Identity Portal</FooterLink>
+                            <FooterHeading>Links</FooterHeading>
+                            <FooterLink to="/request-demo">Request Demo</FooterLink>
+                            <FooterLink to="#pricing">Pricing Plans</FooterLink>
+                            {/* Use normal a tag for existing users to login, remove from hero */}
+                            <FooterLink to="/choose">Login to Dashboard</FooterLink>
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <FooterHeading>Corporate</FooterHeading>
@@ -178,9 +342,21 @@ const Homepage = () => {
                         </Grid>
                     </Grid>
                     <DividerLine />
-                    <CopyrightText>© 2026 OmTech Solutions. All Rights Reserved.</CopyrightText>
+                    <CopyrightText>© {new Date().getFullYear()} OmTech Solution's SaaS Platform. All Rights Reserved.</CopyrightText>
                 </Container>
             </FooterSection>
+
+            {/* --- STICKY CTA --- */}
+            <StickyCTA component={Link} to="/request-demo" variant="extended">
+                Request Demo
+            </StickyCTA>
+
+            {/* --- SNACKBAR --- */}
+            <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+                <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%', fontFamily: 'Georgia, serif' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </FullPageWrapper>
     );
 };
@@ -192,44 +368,31 @@ export default Homepage;
 const FullPageWrapper = styled.div`
     background-color: #ffffff;
     width: 100%;
-`;
-
-const HeroSection = styled(Grid)`
-    min-height: 100vh;
-    display: flex;
-    /* This ensures both children (md=6 items) take up the full height of the parent */
-    align-items: stretch; 
-    overflow: hidden;
-    border-bottom: 2px solid #1a1a1a;
-`;
-
-const BrandingPanel = styled.div`
-    background-color: #ffffff;
-    /* Height: 100% is crucial here to fill the Grid item's stretched height */
-    height: 86%; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 60px;
-    
-`;
-
-const EntryPanel = styled.div`
-    background-color: #fdfcf8;
-    /* Height: 100% ensures the white background reaches the same bottom line */
-    height: 100%; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     position: relative;
 `;
 
+
+
+const TrustSection = styled.section`
+    background-color: #1a1a1a;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 1px solid #333;
+`;
+
+const TrustText = styled.p`
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.9;
+`;
+
 const FeatureSection = styled.section`
-    padding: 120px 0;
+    padding: 100px 0;
     background-color: #ffffff;
-    border-top: 1px solid #e0dcd0;
 `;
 
 const FeatureCard = styled(Paper)`
@@ -243,10 +406,100 @@ const FeatureCard = styled(Paper)`
         transition: all 0.3s ease;
         &:hover {
             transform: translateY(-10px);
-            box-shadow: 12px 12px 0px #7d6b5d;
+            box-shadow: 8px 8px 0px #7d6b5d;
             border-color: #1a1a1a;
         }
     }
+`;
+
+const DemoPreviewSection = styled.section`
+    padding: 100px 0;
+    background-color: #fdfcf8;
+    border-top: 1px solid #e0dcd0;
+    border-bottom: 1px solid #e0dcd0;
+`;
+
+const MockupContainer = styled.div`
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid #1a1a1a;
+    border-radius: 8px 8px 0 0;
+    background: #ffffff;
+    box-shadow: 15px 15px 0px #e0dcd0;
+    overflow: hidden;
+`;
+
+const MockupHeader = styled.div`
+    background: #f4f1ea;
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #1a1a1a;
+`;
+
+const MockupDot = styled.div`
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);
+`;
+
+const MockupBody = styled.div`
+    min-height: 400px;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const TestimonialSection = styled.section`
+    padding: 100px 0;
+    background-color: #1a1a1a;
+    color: white;
+    text-align: center;
+`;
+
+const TestimonialQuote = styled.h3`
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    font-style: italic;
+`;
+
+const TestimonialAuthor = styled.p`
+    font-family: 'serif';
+    color: #a5d6a7;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+`;
+
+const ContactSection = styled.section`
+    padding: 100px 0;
+    background-color: #ffffff;
+`;
+
+const ContactPaper = styled(Paper)`
+    && {
+        padding: 50px;
+        border-radius: 0;
+        border: 1px solid #1a1a1a;
+        box-shadow: 12px 12px 0px #e0dcd0;
+        background-color: #fdfcf8;
+    }
+`;
+
+const StyledTextField = styled(TextField)`
+    & .MuiOutlinedInput-root {
+        border-radius: 0;
+        background-color: #ffffff;
+        font-family: 'serif';
+        fieldset { border-color: #e0dcd0; }
+        &:hover fieldset { border-color: #1a1a1a; }
+        &.Mui-focused fieldset { border-color: #1a1a1a; border-width: 2px; }
+    }
+    & .MuiInputLabel-root { font-family: 'Georgia', serif; }
 `;
 
 const FooterSection = styled.footer`
@@ -255,19 +508,41 @@ const FooterSection = styled.footer`
     padding: 80px 0 40px 0;
 `;
 
-/* Icons and Decorative Elements */
+const StickyCTA = styled(Fab)`
+    && {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        background-color: #1a1a1a;
+        color: white;
+        border: 2px solid white;
+        font-family: 'Georgia', serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: bold;
+        box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
+        z-index: 1000;
+        &:hover {
+            background-color: #333;
+            transform: translateY(-3px);
+        }
+    }
+`;
+
+/* Shared UI Components */
 const IconCircle = styled(Box)`
     width: 70px;
     height: 70px;
-    background-color: #1a1a1a;
-    color: white;
+    background-color: #f4f1ea;
+    color: #1a1a1a;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 25px auto;
+    border: 1px solid #e0dcd0;
+    & > svg { font-size: 2rem; }
 `;
-
 
 const FooterLink = styled(Link)`
     color: #7d6b5d;
@@ -305,7 +580,7 @@ const CopyrightText = styled.p`
 `;
 const SectionHeaderBox = styled(Box)`
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 60px;
 `;
 
 const SectionTitle = styled.h2`
@@ -318,75 +593,27 @@ const SectionTitle = styled.h2`
 
 const TypographySubtitle = styled.p`
     font-family: 'serif';
-    font-style: italic;
-    color: #7d6b5d;
+    font-size: 1.1rem;
+    color: #666;
     margin-top: 10px;
 `;
 
-const LogoImage = styled.img`
-    max-width: 70%;
-    height: auto;
-    margin-bottom: 30px;
-`;
-
-const BrandingDecor = styled.div`
-    border-top: 1px solid #333;
-    padding-top: 20px;
-    text-align: center;
-`;
-
-const YearText = styled.p`
-    color: #7d6b5d;
-    letter-spacing: 5px;
-    font-size: 0.8rem;
-    margin: 0;
-`;
-
-const MottoText = styled.p`
-    color: #7d6b5d;
-    font-family: 'Georgia', serif;
-    font-style: italic;
-    opacity: 0.7;
-`;
-
-const MainTitle = styled.h1`
-    font-family: 'Georgia', serif;
-    font-size: 3.5rem;
-    color: #1a1a1a;
-    text-transform: uppercase;
-    line-height: 1;
-`;
-
 const HorizontalDivider = styled.div`
-    width: 60px;
+    width: 80px;
     height: 4px;
     background-color: #1a1a1a;
-    margin: 20px 0 40px 0;
-`;
-
-const AbstractText = styled.p`
-    font-family: 'serif';
-    font-size: 1.1rem;
-    color: #444;
-    line-height: 1.8;
-    margin-bottom: 40px;
-`;
-
-const ActionGroup = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 `;
 
 const Primary3DButton = styled(Button)`
     && {
         background-color: #1a1a1a;
         color: white;
-        padding: 16px;
+        padding: 16px 32px;
         border-radius: 0;
         font-family: 'Georgia', serif;
         text-transform: uppercase;
         letter-spacing: 2px;
+        font-weight: bold;
         box-shadow: 6px 6px 0px #7d6b5d;
         &:hover {
             background-color: #333;
@@ -396,25 +623,7 @@ const Primary3DButton = styled(Button)`
     }
 `;
 
-const SecondaryGhostButton = styled(Button)`
-    && {
-        color: #1a1a1a;
-        border: 1px solid #1a1a1a;
-        padding: 16px;
-        border-radius: 0;
-        font-family: 'Georgia', serif;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        &:hover {
-            background-color: #f5f5f5;
-        }
-    }
-`;
 
-const ContentWrapper = styled.div`
-    max-width: 500px;
-    padding: 40px;
-`;
 
 const FooterHeading = styled.h4`
     font-family: 'Georgia', serif;
@@ -431,30 +640,41 @@ const FooterInfoText = styled.p`
 
 const CardTitle = styled.h3`
     font-family: 'Georgia', serif;
-    text-transform: uppercase;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
+    font-size: 1.2rem;
     margin-bottom: 15px;
 `;
 
 const CardText = styled.p`
     font-family: serif;
     color: #666;
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.6;
 `;
 
 const PricingSection = styled.section`
-    padding: 200px 0;
-    background-color: #fdfcf8; /* Light paper color */
+    padding: 100px 0;
+    background-color: #fdfcf8;
     border-top: 1px solid #e0dcd0;
+    border-bottom: 1px solid #e0dcd0;
+`;
+
+const UrgencyBanner = styled.div`
+    background-color: #fff3e0;
+    color: #e65100;
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px dashed #ffb74d;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    margin-top: 20px;
+    letter-spacing: 1px;
 `;
 
 const PriceCard = styled(Paper)`
     && {
         padding: 50px 30px;
         border-radius: 0;
-        border: 1px solid ${props => props.isHighlighted ? '#1a1a1a' : '#e0dcd0'};
+        border: 2px solid ${props => props.isHighlighted ? '#1a1a1a' : '#e0dcd0'};
         background-color: white;
         box-shadow: ${props => props.isHighlighted ? '12px 12px 0px #7d6b5d' : '6px 6px 0px #e0dcd0'};
         height: 100%;
@@ -463,15 +683,24 @@ const PriceCard = styled(Paper)`
         position: relative;
         transition: all 0.3s ease;
         &:hover {
-            transform: scale(1.02);
+            transform: translateY(-5px);
         }
     }
+`;
+
+const PlanTag = styled.div`
+    font-family: 'serif';
+    font-style: italic;
+    color: ${props => props.isHighlighted ? '#1a1a1a' : '#7d6b5d'};
+    margin-bottom: 10px;
+    font-weight: ${props => props.isHighlighted ? 'bold' : 'normal'};
 `;
 
 const TierName = styled.h3`
     font-family: 'Georgia', serif;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
     margin: 0 0 20px 0;
 `;
 
@@ -503,35 +732,38 @@ const FeatureItem = styled.p`
     font-family: serif;
     font-size: 1rem;
     color: #444;
-    margin: 10px 0;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
 `;
 
 const PricingButton = styled(Button)`
     && {
         background-color: ${props => props.isHighlighted ? '#1a1a1a' : 'transparent'};
         color: ${props => props.isHighlighted ? 'white' : '#1a1a1a'};
-        border: 1px solid #1a1a1a;
+        border: 2px solid #1a1a1a;
         padding: 15px;
         border-radius: 0;
         font-family: 'Georgia', serif;
         text-transform: uppercase;
+        font-weight: bold;
         letter-spacing: 2px;
         &:hover {
-            background-color: #333;
-            color: white;
+            background-color: ${props => props.isHighlighted ? '#333' : '#f4f1ea'};
         }
     }
 `;
 
 const Ribbon = styled.div`
     position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #7d6b5d;
+    top: -15px;
+    right: 20px;
+    background-color: #1a1a1a;
     color: white;
-    padding: 5px 15px;
-    font-family: serif;
-    font-size: 0.7rem;
+    padding: 8px 15px;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+    box-shadow: 3px 3px 0px #7d6b5d;
 `;

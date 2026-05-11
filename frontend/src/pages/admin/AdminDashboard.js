@@ -40,8 +40,8 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
-// import ShowFees from './studentRelated/ShowFees';
-// import FeeLedger from './studentRelated/FeeLedger';
+import ShowFees from './studentRelated/ShowFees';
+import FeeLedger from './studentRelated/FeeLedger';
 import LivingCertificate from './LivingCertificate';
 import BonafideCertificate from './BonafideCertificate';
 
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
     return (
         <Box sx={{ display: 'flex', backgroundColor: '#f9f7f2', minHeight: '100vh' }}>
             <CssBaseline />
-            
+
             <StyledAppBar open={open} position='absolute' elevation={0}>
                 <Toolbar sx={{ pr: '24px', borderBottom: '1px solid #e0dcd0' }}>
                     <IconButton
@@ -124,10 +124,9 @@ const AdminDashboard = () => {
                         <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance situation="Student" />} />
                         <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks situation="Student" />} />
 
-                        {/* --- Fee Routes (disabled) ---
+                        {/* --- Fee Routes (disabled) ---*/}
                         <Route path="/Admin/fees" element={currentUser ? <ShowFees /> : <Navigate to="/Adminlogin" />} />
                         <Route path="/Admin/students/student/fees/:id" element={<FeeLedger />} />
-                        */}
 
                         {/* Teacher Routes */}
                         <Route path="/Admin/teachers" element={<ShowTeachers />} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     Box, CircularProgress, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Switch, Select, MenuItem, Tooltip, IconButton
@@ -12,21 +12,21 @@ const SASchoolList = () => {
     const [schools, setSchools] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => { fetchSchools(); }, []);
-
-    const getAuth = () => {
+    const getAuth = useCallback(() => {
         const user = JSON.parse(localStorage.getItem('user'));
         return { Authorization: `Bearer ${user?.token}` };
-    };
+    }, []);
 
-    const fetchSchools = async () => {
+    const fetchSchools = useCallback(async () => {
         setLoading(true);
         try {
             const res = await axios.get(`${BASEURL}/SuperAdmin/Schools`, { headers: getAuth() });
             setSchools(res.data);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
-    };
+    }, [getAuth]);
+
+    useEffect(() => { fetchSchools(); }, [fetchSchools]);
 
     const handleToggle = async (id) => {
         try {

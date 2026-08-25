@@ -409,15 +409,6 @@ const TypographyHeader = styled(Typography)`
     }
 `;
 
-const TypographySubtitle = styled(Typography)`
-    && {
-        font-family: 'serif';
-        font-style: italic;
-        color: #64748b;
-        margin-top: 2px;
-        font-size: 0.9rem;
-    }
-`;
 
 const ActionGroup = styled(Box)`
     display: flex;

@@ -7,6 +7,7 @@ import ContactMailIcon from '@mui/icons-material/ContactMail';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import styled from 'styled-components';
 import axios from 'axios';
 import { BASEURL } from '../../utils/apiConfig';
@@ -42,10 +43,12 @@ const SAHomePage = () => {
     }
 
     const statCards = [
+        { label: 'Total Revenue', value: `₹${(stats?.platformFeeRevenue || 0).toLocaleString('en-IN')}`, icon: <CurrencyRupeeIcon />, color: '#2e7d32' },
         { label: 'Total Schools', value: stats?.totalSchools || 0, icon: <SchoolIcon />, color: '#1a1a1a' },
         { label: 'Active Schools', value: stats?.activeSchools || 0, icon: <CheckCircleIcon />, color: '#2e7d32' },
         { label: 'Inactive Schools', value: stats?.inactiveSchools || 0, icon: <CancelIcon />, color: '#c62828' },
         { label: 'Total Students', value: stats?.totalStudents || 0, icon: <PeopleIcon />, color: '#1565c0' },
+        { label: 'Paid Students', value: stats?.platformFeeCount || 0, icon: <CurrencyRupeeIcon />, color: '#1b5e20' },
         { label: 'Total Teachers', value: stats?.totalTeachers || 0, icon: <PersonIcon />, color: '#6a1b9a' },
         { label: 'Pending Demos', value: stats?.pendingDemos || 0, icon: <PendingActionsIcon />, color: '#e65100' },
         { label: 'Total Demos', value: stats?.totalDemos || 0, icon: <ContactMailIcon />, color: '#7d6b5d' },

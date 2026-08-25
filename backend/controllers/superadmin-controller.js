@@ -7,6 +7,7 @@ const Admin = require('../models/adminSchema.js');
 const Student = require('../models/studentSchema.js');
 const Teacher = require('../models/teacherSchema.js');
 const DemoRequest = require('../models/demoRequestSchema.js');
+const PlatformFeeLedger = require('../models/platformFeeLedgerSchema.js');
 const { generateToken } = require('../middleware/auth.js');
 
 // ============================================================
@@ -672,14 +673,21 @@ const razorpayWebhook = async (req, res) => {
  */
 const getDashboardStats = async (req, res) => {
     try {
-        const [totalSchools, activeSchools, totalStudents, totalTeachers, pendingDemos, totalDemos] = await Promise.all([
+        const [totalSchools, activeSchools, totalStudents, totalTeachers, pendingDemos, totalDemos, revenueAgg] = await Promise.all([
             Admin.countDocuments(),
             Admin.countDocuments({ isActive: true }),
             Student.countDocuments(),
             Teacher.countDocuments(),
             DemoRequest.countDocuments({ status: 'pending' }),
             DemoRequest.countDocuments(),
+            PlatformFeeLedger.aggregate([
+                { $match: { status: 'paid' } },
+                { $group: { _id: null, totalRevenue: { $sum: '$amount' }, count: { $sum: 1 } } },
+            ]),
         ]);
+
+        const platformFeeRevenue = revenueAgg.length > 0 ? revenueAgg[0].totalRevenue : 0;
+        const platformFeeCount = revenueAgg.length > 0 ? revenueAgg[0].count : 0;
 
         res.json({
             totalSchools,
@@ -689,6 +697,8 @@ const getDashboardStats = async (req, res) => {
             totalTeachers,
             pendingDemos,
             totalDemos,
+            platformFeeRevenue,
+            platformFeeCount,
         });
     } catch (err) {
         res.status(500).json({ message: 'Failed to fetch stats', error: err.message });

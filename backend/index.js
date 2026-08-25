@@ -56,11 +56,15 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-// Serve React frontend (must be AFTER API routes)
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
+// Serve React frontend (only if the build folder exists)
+const fs = require("fs");
+const frontendBuildPath = path.join(__dirname, "../frontend/build");
+if (fs.existsSync(frontendBuildPath)) {
+    app.use(express.static(frontendBuildPath));
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(frontendBuildPath, "index.html"));
+    });
+}
 
 app.listen(PORT, () => {
     console.log(`Server started at port no. ${PORT}`)

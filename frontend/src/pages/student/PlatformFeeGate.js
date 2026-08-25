@@ -6,7 +6,9 @@ import axios from 'axios';
 import { BASEURL } from '../../utils/apiConfig';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import { authSuccess } from '../../redux/userRelated/userSlice';
+import { authSuccess, authLogout } from '../../redux/userRelated/userSlice';
+import { useNavigate } from 'react-router-dom';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 /**
  * PlatformFeeGate
@@ -20,6 +22,7 @@ import { authSuccess } from '../../redux/userRelated/userSlice';
  */
 const PlatformFeeGate = ({ children }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { currentUser } = useSelector((state) => state.user);
     const studentId = currentUser?._id;
 
@@ -238,6 +241,17 @@ const PlatformFeeGate = ({ children }) => {
                     <SecurityNote>
                         🔒 256-bit SSL encrypted • Powered by Razorpay
                     </SecurityNote>
+
+                    <LogoutButton
+                        onClick={() => {
+                            dispatch(authLogout());
+                            navigate('/');
+                        }}
+                        startIcon={<ExitToAppIcon />}
+                        fullWidth
+                    >
+                        Go Back to Login
+                    </LogoutButton>
                 </Box>
             </GateCard>
 
@@ -417,4 +431,23 @@ const SecurityNote = styled.p`
     text-align: center;
     margin: 16px 0 0 0;
     letter-spacing: 0.5px;
+`;
+
+const LogoutButton = styled(Button)`
+    && {
+        margin-top: 12px;
+        color: #7d6b5d;
+        font-family: serif;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 0;
+        padding: 10px 0;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #f4f1ea;
+            color: #1a1a1a;
+        }
+    }
 `;
